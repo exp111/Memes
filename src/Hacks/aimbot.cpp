@@ -46,6 +46,8 @@ float Settings::Aimbot::AutoSlow::minDamage = 5.0f;
 bool Settings::Aimbot::SpreadLimit::enabled = false;
 float Settings::Aimbot::SpreadLimit::value = 0;
 bool Settings::Aimbot::StickyAim::enabled = false;
+bool Settings::Aimbot::StickyAim::KillTimeout::enabled = false;
+float Settings::Aimbot::StickyAim::KillTimeout::value = 0.4;
 bool Settings::Aimbot::Prediction::enabled = false;
 
 bool Aimbot::aimStepInProgress = false;
@@ -67,7 +69,7 @@ std::unordered_map<Hitbox, std::vector<const char*>, Util::IntHash<Hitbox>> hitb
 };
 
 std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> Settings::Aimbot::weapons = {
-		{ ItemDefinitionIndex::INVALID, { false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false} },
+		{ ItemDefinitionIndex::INVALID, { false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false, 0.4, false} },
 };
 
 static const char* targets[] = { "pelvis", "", "", "spine_0", "spine_1", "spine_2", "spine_3", "neck_0", "head_0" };
@@ -167,7 +169,9 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 	float bestFov = Settings::Aimbot::AutoAim::fov;
 	float bestRealDistance = Settings::Aimbot::AutoAim::fov * 5.f;
 	float bestDistance = 8192.0f;
+	float killTimeout = Settings::Aimbot::StickyAim::KillTimeout::value;
 	int bestHp = 100;
+
 
 	if (!localplayer)
 		return NULL;
@@ -225,10 +229,10 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		IEngineClient::player_info_t entityInformation;
 		engine->GetPlayerInfo(i, &entityInformation);
 
-		if (Settings::Aimbot::StickyAim::enabled && player != temp)
+		if (Settings::Aimbot::StickyAim::KillTimeout::enabled && player != temp)
 		{
 			killTime = globalVars->curtime;
-			killTime += 0.4; 
+			killTime += killTimeout; 
 		}
 
 		if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
@@ -309,7 +313,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		}
 	}
 	savedTarget = closestEntity;
-	if (killTime > globalVars->curtime)
+	if (killTime > globalVars->curtime && Settings::Aimbot::StickyAim::KillTimeout::enabled)
 		return NULL;
 	return closestEntity;
 
@@ -750,6 +754,8 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::SpreadLimit::enabled = currentWeaponSetting.spreadLimitEnabled;
 	Settings::Aimbot::SpreadLimit::value = currentWeaponSetting.spreadLimitValue;
 	Settings::Aimbot::StickyAim::enabled = currentWeaponSetting.stickyAimEnabled;
+	Settings::Aimbot::StickyAim::KillTimeout::enabled = currentWeaponSetting.killTimeoutEnabled;
+	Settings::Aimbot::StickyAim::KillTimeout::value = currentWeaponSetting.killTimeoutValue;
 
 	for (int i = (int) Hitbox::HITBOX_HEAD; i <= (int) Hitbox::HITBOX_ARMS; i++)
 		Settings::Aimbot::AutoWall::bones[i] = currentWeaponSetting.autoWallBones[i];

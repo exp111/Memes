@@ -39,6 +39,8 @@ static bool autoWallBones[] = { true, false, false, false, false, false };
 static bool spreadLimitEnabled = false;
 static float spreadLimitValue = 0;
 static bool stickyAimEnabled = false;
+static bool killTimeoutEnabled = false;
+static float killTimeoutValue = 0.4;
 static bool autoAimRealDistance = false;
 static bool autoSlow = false;
 static bool predEnabled = false;
@@ -89,6 +91,8 @@ void UI::ReloadWeaponSettings()
 	autoAimRealDistance = Settings::Aimbot::weapons.at(index).autoAimRealDistance;
 	autoSlow = Settings::Aimbot::weapons.at(index).autoSlow;
 	stickyAimEnabled = Settings::Aimbot::weapons.at(index).stickyAimEnabled;
+	killTimeoutEnabled = Settings::Aimbot::weapons.at(index).killTimeoutEnabled;
+	killTimeoutValue = Settings::Aimbot::weapons.at(index).killTimeoutValue;
 	predEnabled = Settings::Aimbot::weapons.at(index).predEnabled;
 	autoSlowMinDamage = Settings::Aimbot::weapons.at(index).autoSlowMinDamage;
 
@@ -110,7 +114,7 @@ void UI::UpdateWeaponSettings()
 			autoPistolEnabled, autoShootEnabled, autoScopeEnabled, 
 			noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, 
 			autoWallEnabled, autoWallValue, autoAimRealDistance, autoSlow, 
-			autoSlowMinDamage, spreadLimitEnabled, spreadLimitValue, stickyAimEnabled, predEnabled
+			autoSlowMinDamage, spreadLimitEnabled, spreadLimitValue, stickyAimEnabled, killTimeoutEnabled, killTimeoutValue, predEnabled
 	};
 
 	for (int bone = (int) Hitbox::HITBOX_HEAD; bone <= (int) Hitbox::HITBOX_ARMS; bone++)
@@ -143,6 +147,7 @@ void Aimbot::RenderTab()
 		ImGui::InputText("##FILTERWEAPONS", filterWeapons, IM_ARRAYSIZE(filterWeapons));
 		ImGui::PopItemWidth();
 		ImGui::ListBoxHeader("##GUNS", ImVec2(-1, -1));
+
 		for (auto it : ItemDefinitionIndexMap)
 		{
 			bool isDefault = (int) it.first < 0;
@@ -157,9 +162,11 @@ void Aimbot::RenderTab()
 			std::string formattedName;
 			char changeIndicator = ' ';
 			bool isChanged = Settings::Aimbot::weapons.find(it.first) != Settings::Aimbot::weapons.end();
+
 			if (!isDefault && isChanged)
 				changeIndicator = '*';
 			formattedName = changeIndicator + (isDefault ? Util::Items::GetItemDisplayName(it.first).c_str() : Util::Items::GetItemDisplayName(it.first));
+			
 			if (ImGui::Selectable(formattedName.c_str(), item_selected))
 			{
 				currentWeapon = it.first;
@@ -176,50 +183,63 @@ void Aimbot::RenderTab()
 		{
 			ImGui::Text("Target");
 			ImGui::Separator();
+
 			ImGui::Columns(2, NULL, true);
 			{
-				if (ImGui::Checkbox("Closest Bone", &closestBone))
+
+				if (ImGui::Checkbox("Target Friendly", &friendly))
 					UI::UpdateWeaponSettings();
-				SetTooltip("Aims at the bone closest to your crosshair");
-			}
-			ImGui::NextColumn();
-			{
+				SetTooltip("Whether to target friendlies");	
 				ImGui::PushItemWidth(-1);
+
 				if (ImGui::Checkbox("Sticky Aimbot", &stickyAimEnabled))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Sticks to the target, doesnt snap to the other");
-			}
-			ImGui::Columns(2, NULL, true);
-			{
-				if (ImGui::Checkbox("Friendly", &friendly))
+
+				if (ImGui::Checkbox("Kill Timeout", &killTimeoutEnabled))
 					UI::UpdateWeaponSettings();
-				SetTooltip("Whether to target friendlies");
+				SetTooltip("Delays aimbot snap to the other target after a kill");
+				
 			}
 			ImGui::NextColumn();
 			{
 				ImGui::PushItemWidth(-1);
+
 				if (!closestBone)
 				{
-				if (ImGui::Combo("##AIMTARGET", (int*)& bone, targets, IM_ARRAYSIZE(targets)))
-					UI::UpdateWeaponSettings();
+					if (ImGui::Combo("##AIMTARGET", (int*)& bone, targets, IM_ARRAYSIZE(targets)))
+						UI::UpdateWeaponSettings();
 				}
+				else
+				ImGui::Text("Disabled");
+				
+				if (ImGui::Checkbox("Closest Bone", &closestBone))
+					UI::UpdateWeaponSettings();
+				SetTooltip("Aims at the bone closest to your crosshair");
+
+				if (ImGui::SliderFloat("##KTV", &killTimeoutValue, 0, 2, "%0.3fs"))
+					UI::UpdateWeaponSettings();
 				ImGui::PopItemWidth();
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
 			ImGui::Text("Accuracy");
 			ImGui::Separator();
+
 			ImGui::Columns(2, NULL, true);
 			{
 				if (ImGui::Checkbox("Auto Aim", &autoAimEnabled))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Locks onto enemies within a certain FOV amount");
+
 				if (ImGui::Checkbox("Recoil Control", &rcsEnabled))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Automatically controls recoil");
+
 				if (ImGui::Checkbox("Adaptive FOV", &rcsAdaptive))
 					UI::UpdateWeaponSettings();
 				SetTooltip("FOV adaptively changes to make aimbot work properly with RCS");
+
 				if (ImGui::Checkbox("Distance-Based FOV", &autoAimRealDistance))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Takes perspective into account when calculating FOV");
@@ -230,9 +250,11 @@ void Aimbot::RenderTab()
 				if (ImGui::SliderFloat("##AA", &autoAimValue, 0, 180, "FOV: %0.3f"))
 					UI::UpdateWeaponSettings();
 				ImGui::PopItemWidth();
+
 				if (ImGui::Button("RCS Settings", ImVec2(-1, 0)))
 					ImGui::OpenPopup("optionRCSAmount");
 				ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_Always);
+
 				if (ImGui::BeginPopup("optionRCSAmount"))
 				{
 					ImGui::PushItemWidth(-1);
@@ -247,14 +269,17 @@ void Aimbot::RenderTab()
 					ImGui::EndPopup();
 				}
 				ImGui::PopItemWidth();
+
 				if (ImGui::Button("AFOV Settings",ImVec2(-1,0)))
 					ImGui::OpenPopup("optionARCSAmount");
 				ImGui::SetNextWindowSize(ImVec2(200, 70), ImGuiSetCond_Always);
+
 				if (ImGui::BeginPopup("optionARCSAmount"))
 				{
 					ImGui::PushItemWidth(-1);
 					if (ImGui::SliderFloat("##ARCSSpeed", &rcsAdaptiveSpeed, 0, 1, "Speed: %0.3f"))
 						UI::UpdateWeaponSettings();
+
 					if (ImGui::SliderFloat("##ARCSLimit", &rcsAdaptiveLimit, 1, 10, "Limit: %0.3f"))
 						UI::UpdateWeaponSettings();
 					ImGui::PopItemWidth();
@@ -303,6 +328,7 @@ void Aimbot::RenderTab()
 			ImGui::EndChild();
 		}
 	}
+
 	ImGui::NextColumn();
 	{
 		ImGui::BeginChild("COL2", ImVec2(0, 0), true);

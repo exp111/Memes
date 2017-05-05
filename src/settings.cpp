@@ -184,6 +184,8 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		weaponSetting["AutoSlow"]["Enabled"] = i.second.autoSlow;
 		weaponSetting["AutoSlow"]["MinDamage"] = i.second.autoSlowMinDamage;
 		weaponSetting["StickyAim"]["Enabled"] = i.second.stickyAimEnabled;
+		weaponSetting["KillTimeout"]["Enabled"] = i.second.killTimeoutEnabled;
+		weaponSetting["KillTimeout"]["Value"] = i.second.killTimeoutValue;
 		weaponSetting["Prediction"]["Enabled"] = i.second.predEnabled;
 
 		for (int bone = (int) Hitbox::HITBOX_HEAD; bone <= (int) Hitbox::HITBOX_ARMS; bone++)
@@ -518,7 +520,7 @@ void Settings::LoadConfig(std::string path)
 	Fonts::SetupFonts();
 
 	Settings::Aimbot::weapons = {
-			{ ItemDefinitionIndex::INVALID, { false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false} },
+			{ ItemDefinitionIndex::INVALID, { false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false, 0.4, false} },
 };
 
 	for (Json::ValueIterator itr = settings["Aimbot"]["weapons"].begin(); itr != settings["Aimbot"]["weapons"].end(); itr++)
@@ -582,6 +584,8 @@ void Settings::LoadConfig(std::string path)
 				weaponSetting["SpreadLimit"]["Enabled"].asBool(),
 				weaponSetting["SpreadLimit"]["Value"].asFloat(),
 				weaponSetting["StickyAim"]["Enabled"].asBool(),
+				weaponSetting["KillTimeout"]["Enabled"].asBool(),
+				weaponSetting["KillTimeout"]["Value"].asFloat(),
 				weaponSetting["Prediction"]["Enabled"].asBool()
 		};
 
