@@ -52,6 +52,7 @@ bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
 
 bool shouldAim;
+float killTime = 0;
 QAngle AimStepLastAngle;
 QAngle RCSLastPunch;
 C_BasePlayer* savedTarget = NULL;
@@ -224,6 +225,12 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		IEngineClient::player_info_t entityInformation;
 		engine->GetPlayerInfo(i, &entityInformation);
 
+		if (Settings::Aimbot::StickyAim::enabled && player != temp)
+		{
+			killTime = globalVars->curtime;
+			killTime += 0.4; 
+		}
+
 		if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
 			continue;
 			
@@ -302,6 +309,8 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		}
 	}
 	savedTarget = closestEntity;
+	if (killTime > globalVars->curtime)
+		return NULL;
 	return closestEntity;
 
 }

@@ -434,6 +434,8 @@ void Misc::RenderTab()
 				UI::KeyBindButton(&Settings::Airstuck::key);
 				UI::KeyBindButton(&Settings::Autoblock::key);
 				UI::KeyBindButton(&Settings::JumpThrow::key);
+				ImGui::Checkbox("Silent Defuse", &Settings::AutoDefuse::silent);
+				SetTooltip("Will defuse the bomb with no need to look at it");
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
