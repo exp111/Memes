@@ -239,7 +239,21 @@ void Aimbot::RenderTab()
 				if (ImGui::Checkbox("Adaptive FOV", &rcsAdaptive))
 					UI::UpdateWeaponSettings();
 				SetTooltip("FOV adaptively changes to make aimbot work properly with RCS");
+				if (rcsAdaptive && autoAimValue > 100)
+				{
+					rcsAdaptive = false;
+					ImGui::OpenPopup("ERROR###FOV_TOO_HIGH");
 
+				}
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(210, 85));
+				if (ImGui::BeginPopupModal("ERROR###FOV_TOO_HIGH"))
+				{
+					ImGui::Text("You cannot use Adaptive FOV with FOV > 100.");
+					if (ImGui::Button("OK"))
+						ImGui::CloseCurrentPopup();
+						
+					ImGui::EndPopup();
+				}
 				if (ImGui::Checkbox("Distance-Based FOV", &autoAimRealDistance))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Takes perspective into account when calculating FOV");
@@ -280,7 +294,7 @@ void Aimbot::RenderTab()
 					if (ImGui::SliderFloat("##ARCSSpeed", &rcsAdaptiveSpeed, 0, 1, "Speed: %0.3f"))
 						UI::UpdateWeaponSettings();
 
-					if (ImGui::SliderFloat("##ARCSLimit", &rcsAdaptiveLimit, 1, 10, "Limit: %0.3f"))
+					if (ImGui::SliderFloat("##ARCSLimit", &rcsAdaptiveLimit, Settings::Aimbot::AutoAim::fov, (Settings::Aimbot::AutoAim::fov + 20), "Limit FOV: %0.3f"))
 						UI::UpdateWeaponSettings();
 					ImGui::PopItemWidth();
 					ImGui::EndPopup();

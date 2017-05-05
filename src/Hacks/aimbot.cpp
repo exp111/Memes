@@ -179,23 +179,23 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 	if (!Settings::Aimbot::silent && Settings::Aimbot::RCS::adaptive)
 	{
 		float adaptiveFov = Settings::Aimbot::AutoAim::fov;
-		float baseFov = Settings::Aimbot::AutoAim::fov;
 		float rcsAdaptiveSpeed = Settings::Aimbot::RCS::adaptiveSpeed;
 		float rcsAdaptiveLimit = Settings::Aimbot::RCS::adaptiveLimit;
+		
 
 		if (localplayer->GetShotsFired() > 0)
 		{
 			adaptiveFov += localplayer->GetShotsFired() * rcsAdaptiveSpeed;
 
-			if (adaptiveFov < baseFov * rcsAdaptiveLimit) 
+			if (adaptiveFov < rcsAdaptiveLimit) 
 			{
 				Settings::Aimbot::AutoAim::fov = adaptiveFov;
 				bestFov = adaptiveFov;
 			} 
 			else 
 			{
-				Settings::Aimbot::AutoAim::fov = baseFov * rcsAdaptiveLimit;
-				bestFov = Settings::Aimbot::AutoAim::fov * rcsAdaptiveLimit;
+				Settings::Aimbot::AutoAim::fov = rcsAdaptiveLimit;
+				bestFov = rcsAdaptiveLimit;
 			}
 		}
 
