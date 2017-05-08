@@ -5,6 +5,7 @@ static bool enabled = false;
 static bool silent = false;
 static bool friendly = false;
 static bool closestBone = false;
+static bool hitScan = false;
 static Bone bone = Bone::BONE_HEAD;
 static ButtonCode_t aimkey = ButtonCode_t::MOUSE_MIDDLE;
 static bool aimkeyOnly = false;
@@ -56,6 +57,7 @@ void UI::ReloadWeaponSettings()
 	silent = Settings::Aimbot::weapons.at(index).silent;
 	friendly = Settings::Aimbot::weapons.at(index).friendly;
 	closestBone = Settings::Aimbot::weapons.at(index).closestBone;
+	hitScan = Settings::Aimbot::weapons.at(index).hitScan;
 	bone = Settings::Aimbot::weapons.at(index).bone;
 	aimkey = Settings::Aimbot::weapons.at(index).aimkey;
 	aimkeyOnly = Settings::Aimbot::weapons.at(index).aimkeyOnly;
@@ -106,7 +108,7 @@ void UI::UpdateWeaponSettings()
 		Settings::Aimbot::weapons[currentWeapon] = AimbotWeapon_t();
 
 	AimbotWeapon_t settings = {
-			enabled, silent, friendly, closestBone, bone, aimkey, aimkeyOnly, 
+			enabled, silent, friendly, closestBone, hitScan, bone, aimkey, aimkeyOnly, 
 			smoothEnabled, smoothValue, smoothType, smoothSaltEnabled, smoothSaltMultiplier, 
 			errorMarginEnabled, errorMarginValue, 
 			autoAimEnabled, autoAimValue, aimStepEnabled, aimStepValue, 
@@ -199,6 +201,10 @@ void Aimbot::RenderTab()
 				if (ImGui::Checkbox("Kill Timeout", &killTimeoutEnabled))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Delays aimbot snap to the other target after a kill");
+
+				if (ImGui::Checkbox("Basic Hit Scan", &hitScan))
+					UI::UpdateWeaponSettings();
+				SetTooltip("Scans for visible bones to shoot. May lower your FPS.");
 				
 			}
 			ImGui::NextColumn();

@@ -8,6 +8,7 @@ bool Settings::Aimbot::enabled = false;
 bool Settings::Aimbot::silent = false;
 bool Settings::Aimbot::friendly = false;
 bool Settings::Aimbot::closestBone = false;
+bool Settings::Aimbot::HitScan::enabled = false;
 Bone Settings::Aimbot::bone = Bone::BONE_HEAD;
 ButtonCode_t Settings::Aimbot::aimkey = ButtonCode_t::MOUSE_MIDDLE;
 bool Settings::Aimbot::aimkeyOnly = false;
@@ -69,7 +70,7 @@ std::unordered_map<Hitbox, std::vector<const char*>, Util::IntHash<Hitbox>> hitb
 };
 
 std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> Settings::Aimbot::weapons = {
-		{ ItemDefinitionIndex::INVALID, { false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false, 0.4, false} },
+		{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false, 0.4, false} },
 };
 
 static const char* targets[] = { "pelvis", "", "", "spine_0", "spine_1", "spine_2", "spine_3", "neck_0", "head_0" };
@@ -106,6 +107,29 @@ void GetBestBone(C_BasePlayer* player, float& bestDamage, Bone& bestBone)
 				bestBone = bone;
 			}
 		}
+	}
+}
+
+void HitScan(C_BasePlayer* player, Bone& bestBone)
+{
+	bestBone = Settings::Aimbot::bone;
+
+	if (Entity::IsVisible(player, bestBone))
+		return;
+
+	for (std::unordered_map<Hitbox, std::vector<const char*>, Util::IntHash<Hitbox>>::iterator it = hitboxes.begin(); it != hitboxes.end(); it++)
+	{
+		std::vector<const char*> hitboxList = hitboxes[it->first];
+		for (std::vector<const char*>::iterator it2 = hitboxList.begin(); it2 != hitboxList.end(); it2++)
+		{
+			Bone bone = Entity::GetBoneByName(player, *it2);
+			
+			if (Entity::IsVisible(player, bone))
+			{
+				bestBone = bone;
+				return;
+			}
+		}		
 	}
 }
 
@@ -289,6 +313,9 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 			continue;
 
 		bestBone = static_cast<Bone>(Entity::GetBoneByName(player, targets[(int) targetBone]));
+
+		if (Settings::Aimbot::HitScan::enabled)
+			HitScan(player, bestBone);
 
 		if (Settings::Aimbot::AutoWall::enabled)
 		{
@@ -719,6 +746,7 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::silent = currentWeaponSetting.silent;
 	Settings::Aimbot::friendly = currentWeaponSetting.friendly;
 	Settings::Aimbot::closestBone = currentWeaponSetting.closestBone;
+	Settings::Aimbot::HitScan::enabled = currentWeaponSetting.hitScan;
 	Settings::Aimbot::bone = currentWeaponSetting.bone;
 	Settings::Aimbot::aimkey = currentWeaponSetting.aimkey;
 	Settings::Aimbot::aimkeyOnly = currentWeaponSetting.aimkeyOnly;
