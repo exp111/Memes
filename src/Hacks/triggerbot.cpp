@@ -2,6 +2,7 @@
 #include "autowall.h"
 
 bool Settings::Triggerbot::enabled = false;
+bool Settings::Triggerbot::onKey = true;
 bool Settings::Triggerbot::Filters::enemies = true;
 bool Settings::Triggerbot::Filters::allies = false;
 bool Settings::Triggerbot::Filters::walls = false;
@@ -25,7 +26,7 @@ void Triggerbot::CreateMove(CUserCmd *cmd)
 	if (!Settings::Triggerbot::enabled)
 		return;
 
-	if (!inputSystem->IsButtonDown(Settings::Triggerbot::key))
+	if (!inputSystem->IsButtonDown(Settings::Triggerbot::key) && Settings::Triggerbot::onKey)
 		return;
 
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());

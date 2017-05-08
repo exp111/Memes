@@ -201,6 +201,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings["Resolver"]["resolve_all"] = Settings::Resolver::resolveAll;
 
 	settings["Triggerbot"]["enabled"] = Settings::Triggerbot::enabled;
+	settings["Triggerbot"]["onKey"] = Settings::Triggerbot::onKey;
 	settings["Triggerbot"]["key"] = Util::GetButtonName(Settings::Triggerbot::key);
 	settings["Triggerbot"]["Filters"]["enemies"] = Settings::Triggerbot::Filters::enemies;
 	settings["Triggerbot"]["Filters"]["allies"] = Settings::Triggerbot::Filters::allies;
@@ -600,6 +601,7 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings["Resolver"]["resolve_all"], &Settings::Resolver::resolveAll);
 
 	GetVal(settings["Triggerbot"]["enabled"], &Settings::Triggerbot::enabled);
+	GetVal(settings["Triggerbot"]["onKey"], &Settings::Triggerbot::onKey);
 	GetButtonCode(settings["Triggerbot"]["key"], &Settings::Triggerbot::key);
 	GetVal(settings["Triggerbot"]["Filters"]["enemies"], &Settings::Triggerbot::Filters::enemies);
 	GetVal(settings["Triggerbot"]["Filters"]["allies"], &Settings::Triggerbot::Filters::allies);

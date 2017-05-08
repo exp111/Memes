@@ -13,7 +13,7 @@ void Triggerbot::RenderTab()
 			ImGui::Columns(2, NULL, true);
 			{
 				ImGui::ItemSize(ImVec2(0.0f, 0.0f), 0.0f);
-				ImGui::Text("Trigger Key");
+				ImGui::Checkbox("Enable Trigger Key", &Settings::Triggerbot::onKey);
 			}
 			ImGui::NextColumn();
 			{
