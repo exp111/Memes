@@ -70,6 +70,8 @@ enum class AntiAimType_Y : int
 	ANGEL_BACKWARD,
 	ANGEL_INVERSE,
 	ANGEL_SPIN,
+	LOWERBODY,
+	LBYONGROUND
 };
 
 enum class AntiAimType_X : int

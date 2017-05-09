@@ -117,22 +117,36 @@ void HitScan(C_BasePlayer* player, Bone& bestBone)
 	//if bone from settings is visible, just leave it
 	if (Entity::IsVisible(player, bestBone))
 		return;
-
-	for (std::unordered_map<Hitbox, std::vector<const char*>, Util::IntHash<Hitbox>>::iterator it = hitboxes.begin(); it != hitboxes.end(); it++)
+	
+	Bone bone;
+	
+	//fuckin pseudo. Don'do this kind of shit pls.
+	for (int i ; i < 7 ; i++)
 	{
-		std::vector<const char*> hitboxList = hitboxes[it->first];
-		for (std::vector<const char*>::iterator it2 = hitboxList.begin(); it2 != hitboxList.end(); it2++)
+		switch (i)
 		{
-			Bone bone = Entity::GetBoneByName(player, *it2);
+			case 1:
+				bone = Bone::BONE_HEAD;
+			case 2:
+				bone = Bone::BONE_NECK;
+			case 3:
+				bone = Bone::BONE_PELVIS;
+			case 4:
+				bone = Bone::BONE_UPPER_SPINAL_COLUMN;
+			case 5:
+				bone = Bone::BONE_MIDDLE_SPINAL_COLUMN;
+			case 6:
+				bone = Bone::BONE_LOWER_SPINAL_COLUMN;
+			case 7:
+				bone = Bone::BONE_HIP;
 			
 			if (Entity::IsVisible(player, bone))
 			{
 				bestBone = bone;
-				it = hitboxes.end();
 				return;
 			}
-		}		
-	}
+		}
+	}		
 }
 
 bool SpreadLimit(float spread, CUserCmd* cmd, C_BaseCombatWeapon* active_weapon) 
