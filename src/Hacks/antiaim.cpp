@@ -204,6 +204,35 @@ void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clamp)
 			factor = (globalVars->curtime * 5000.0f);
 			angle.y = factor + 36000000.0f;
 			break;
+		case AntiAimType_Y::LOWERBODY:
+			angle.y = *((C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer())->GetLowerBodyYawTarget()) + rand(35) + 165;
+			break;
+		case AntiAimType_Y::LBYONGROUND:
+			if *((C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer())->GetFlags() & FL_ONGROUND)
+				angle.y = *(C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer())->GetLowerBodyYawTarget() + rand(35) + 165;
+			else
+			{
+				static int i = globalVars->curtime % 3;
+
+				if (i>1 && i<2)
+					i = 1;
+				else
+				if (i>2 && i<3)
+					i = 2;
+				else
+					i = 0;
+
+				switch (i)
+					case 1:
+						yFlip ? angle.y += 90.f : angle.y -= 90.0f;
+						break
+					case 2:
+						yFlip ? angle.y -= 130.0f : angle.y -= 220.0f;						
+						break
+					default:
+						angle.y -= 180.0f;
+			}
+			break;
 		default:
 			angle.y -= 0.0f;
 			break;
