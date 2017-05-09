@@ -39,7 +39,7 @@ static float autoWallValue = 10.0f;
 static bool autoWallBones[] = { true, false, false, false, false, false };
 static bool spreadLimitEnabled = false;
 static float spreadLimitValue = 0;
-static bool playerLockEnabled = false;
+static bool stickyAimEnabled = false;
 static bool killTimeoutEnabled = false;
 static float killTimeoutValue = 0.4;
 static bool autoAimRealDistance = false;
@@ -92,7 +92,7 @@ void UI::ReloadWeaponSettings()
 	spreadLimitValue = Settings::Aimbot::weapons.at(index).spreadLimitValue;
 	autoAimRealDistance = Settings::Aimbot::weapons.at(index).autoAimRealDistance;
 	autoSlow = Settings::Aimbot::weapons.at(index).autoSlow;
-	playerLockEnabled = Settings::Aimbot::weapons.at(index).playerLockEnabled;
+	stickyAimEnabled = Settings::Aimbot::weapons.at(index).stickyAimEnabled;
 	killTimeoutEnabled = Settings::Aimbot::weapons.at(index).killTimeoutEnabled;
 	killTimeoutValue = Settings::Aimbot::weapons.at(index).killTimeoutValue;
 	predEnabled = Settings::Aimbot::weapons.at(index).predEnabled;
@@ -116,7 +116,7 @@ void UI::UpdateWeaponSettings()
 			autoPistolEnabled, autoShootEnabled, autoScopeEnabled, 
 			noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, 
 			autoWallEnabled, autoWallValue, autoAimRealDistance, autoSlow, 
-			autoSlowMinDamage, spreadLimitEnabled, spreadLimitValue, playerLockEnabled, killTimeoutEnabled, killTimeoutValue, predEnabled
+			autoSlowMinDamage, spreadLimitEnabled, spreadLimitValue, stickyAimEnabled, killTimeoutEnabled, killTimeoutValue, predEnabled
 	};
 
 	for (int bone = (int) Hitbox::HITBOX_HEAD; bone <= (int) Hitbox::HITBOX_ARMS; bone++)
@@ -194,9 +194,9 @@ void Aimbot::RenderTab()
 				SetTooltip("Whether to target friendlies");	
 				ImGui::PushItemWidth(-1);
 
-				if (ImGui::Checkbox("Player lock", &playerLockEnabled))
+				if (ImGui::Checkbox("Sticky Aimbot", &stickyAimEnabled))
 					UI::UpdateWeaponSettings();
-				SetTooltip("Locks to the target, doesnt snap to the other");
+				SetTooltip("Sticks to the target, doesnt snap to the other");
 
 				if (ImGui::Checkbox("Kill Timeout", &killTimeoutEnabled))
 					UI::UpdateWeaponSettings();
