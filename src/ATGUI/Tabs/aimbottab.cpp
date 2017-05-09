@@ -252,7 +252,7 @@ void Aimbot::RenderTab()
 
 				}
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(210, 85));
-				if (ImGui::BeginPopupModal("ERROR###FOV_TOO_HIGH"))
+				if (ImGui::BeginPopupModal("ERROR###FOV_TOO_HIGH", NULL, ImGuiWindowFlags_NoResize))
 				{
 					ImGui::Text("You cannot use Adaptive FOV with FOV > 100.");
 					if (ImGui::Button("OK"))
@@ -260,6 +260,7 @@ void Aimbot::RenderTab()
 						
 					ImGui::EndPopup();
 				}
+				ImGui::PopStyleVar();
 				if (ImGui::Checkbox("Distance-Based FOV", &autoAimRealDistance))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Takes perspective into account when calculating FOV");
