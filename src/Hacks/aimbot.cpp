@@ -114,6 +114,7 @@ void HitScan(C_BasePlayer* player, Bone& bestBone)
 {
 	bestBone = Settings::Aimbot::bone;
 
+	//if bone from settings is visible, just leave it
 	if (Entity::IsVisible(player, bestBone))
 		return;
 
@@ -127,6 +128,7 @@ void HitScan(C_BasePlayer* player, Bone& bestBone)
 			if (Entity::IsVisible(player, bone))
 			{
 				bestBone = bone;
+				it = hitboxes.end();
 				return;
 			}
 		}		
@@ -137,10 +139,10 @@ bool SpreadLimit(float spread, CUserCmd* cmd, C_BaseCombatWeapon* active_weapon)
 {
 	float pspread = spread / 100.f;
 	bool bSpreadLimit = false;
+
 	if(active_weapon->GetInaccuracy() <= pspread) 
-	{
 		bSpreadLimit = true;
-	}
+
 	return bSpreadLimit;
 }
 
@@ -235,9 +237,14 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 			&& temp
 			&& !temp->GetDormant()
 			&& !temp->GetImmune()
-			&& temp->GetAlive()
-			&& Entity::IsVisible(temp, targetBone))
-			player = temp;
+			&& temp->GetAlive())
+		{
+			if (Settings::Aimbot::HitScan::enabled)
+				HitScan(temp, targetBone);
+
+			if (Entity::IsVisible(temp, targetBone))
+				player = temp;
+		}
 		else
 		if (!player
 			|| player == localplayer
@@ -261,7 +268,10 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 
 		if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
 			continue;
-			
+		
+		if (Settings::Aimbot::HitScan::enabled)
+			HitScan(player, targetBone);
+
 		Vector eVecTarget = player->GetBonePosition((int) targetBone);
 		Vector pVecTarget = localplayer->GetEyePosition();
 
@@ -313,9 +323,6 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 			continue;
 
 		bestBone = static_cast<Bone>(Entity::GetBoneByName(player, targets[(int) targetBone]));
-
-		if (Settings::Aimbot::HitScan::enabled)
-			HitScan(player, bestBone);
 
 		if (Settings::Aimbot::AutoWall::enabled)
 		{
