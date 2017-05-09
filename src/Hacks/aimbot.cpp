@@ -46,9 +46,9 @@ bool Settings::Aimbot::AutoSlow::enabled = false;
 float Settings::Aimbot::AutoSlow::minDamage = 5.0f;
 bool Settings::Aimbot::SpreadLimit::enabled = false;
 float Settings::Aimbot::SpreadLimit::value = 0;
-bool Settings::Aimbot::StickyAim::enabled = false;
-bool Settings::Aimbot::StickyAim::KillTimeout::enabled = false;
-float Settings::Aimbot::StickyAim::KillTimeout::value = 0.4;
+bool Settings::Aimbot::PlayerLock::enabled = false;
+bool Settings::Aimbot::PlayerLock::KillTimeout::enabled = false;
+float Settings::Aimbot::PlayerLock::KillTimeout::value = 0.4;
 bool Settings::Aimbot::Prediction::enabled = false;
 
 bool Aimbot::aimStepInProgress = false;
@@ -114,6 +114,7 @@ void HitScan(C_BasePlayer* player, Bone& bestBone)
 {
 	bestBone = Settings::Aimbot::bone;
 
+	//if bone from settings is visible, just leave it
 	if (Entity::IsVisible(player, bestBone))
 		return;
 
@@ -127,6 +128,7 @@ void HitScan(C_BasePlayer* player, Bone& bestBone)
 			if (Entity::IsVisible(player, bone))
 			{
 				bestBone = bone;
+				it = hitboxes.end();
 				return;
 			}
 		}		
@@ -137,10 +139,10 @@ bool SpreadLimit(float spread, CUserCmd* cmd, C_BaseCombatWeapon* active_weapon)
 {
 	float pspread = spread / 100.f;
 	bool bSpreadLimit = false;
+
 	if(active_weapon->GetInaccuracy() <= pspread) 
-	{
 		bSpreadLimit = true;
-	}
+
 	return bSpreadLimit;
 }
 
@@ -193,7 +195,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 	float bestFov = Settings::Aimbot::AutoAim::fov;
 	float bestRealDistance = Settings::Aimbot::AutoAim::fov * 5.f;
 	float bestDistance = 8192.0f;
-	float killTimeout = Settings::Aimbot::StickyAim::KillTimeout::value;
+	float killTimeout = Settings::Aimbot::PlayerLock::KillTimeout::value;
 	int bestHp = 100;
 
 
@@ -231,13 +233,18 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		Bone targetBone = Settings::Aimbot::bone;
 		C_BasePlayer* temp = savedTarget;
 
-		if (Settings::Aimbot::StickyAim::enabled 
+		if (Settings::Aimbot::PlayerLock::enabled 
 			&& temp
 			&& !temp->GetDormant()
 			&& !temp->GetImmune()
-			&& temp->GetAlive()
-			&& Entity::IsVisible(temp, targetBone))
-			player = temp;
+			&& temp->GetAlive())
+		{
+			if (Settings::Aimbot::HitScan::enabled)
+				HitScan(temp, targetBone);
+
+			if (Entity::IsVisible(temp, targetBone))
+				player = temp;
+		}
 		else
 		if (!player
 			|| player == localplayer
@@ -253,7 +260,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		IEngineClient::player_info_t entityInformation;
 		engine->GetPlayerInfo(i, &entityInformation);
 
-		if (Settings::Aimbot::StickyAim::KillTimeout::enabled && player != temp)
+		if (Settings::Aimbot::PlayerLock::KillTimeout::enabled && player != temp)
 		{
 			killTime = globalVars->curtime;
 			killTime += killTimeout; 
@@ -261,7 +268,10 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 
 		if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
 			continue;
-			
+		
+		if (Settings::Aimbot::HitScan::enabled)
+			HitScan(player, targetBone);
+
 		Vector eVecTarget = player->GetBonePosition((int) targetBone);
 		Vector pVecTarget = localplayer->GetEyePosition();
 
@@ -314,9 +324,6 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 
 		bestBone = static_cast<Bone>(Entity::GetBoneByName(player, targets[(int) targetBone]));
 
-		if (Settings::Aimbot::HitScan::enabled)
-			HitScan(player, bestBone);
-
 		if (Settings::Aimbot::AutoWall::enabled)
 		{
 			float damage = 0.0f;
@@ -340,7 +347,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		}
 	}
 	savedTarget = closestEntity;
-	if (killTime > globalVars->curtime && Settings::Aimbot::StickyAim::KillTimeout::enabled)
+	if (killTime > globalVars->curtime && Settings::Aimbot::PlayerLock::KillTimeout::enabled)
 		return NULL;
 	return closestEntity;
 
@@ -781,9 +788,9 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::AutoSlow::minDamage = currentWeaponSetting.autoSlowMinDamage;
 	Settings::Aimbot::SpreadLimit::enabled = currentWeaponSetting.spreadLimitEnabled;
 	Settings::Aimbot::SpreadLimit::value = currentWeaponSetting.spreadLimitValue;
-	Settings::Aimbot::StickyAim::enabled = currentWeaponSetting.stickyAimEnabled;
-	Settings::Aimbot::StickyAim::KillTimeout::enabled = currentWeaponSetting.killTimeoutEnabled;
-	Settings::Aimbot::StickyAim::KillTimeout::value = currentWeaponSetting.killTimeoutValue;
+	Settings::Aimbot::PlayerLock::enabled = currentWeaponSetting.playerLockEnabled;
+	Settings::Aimbot::PlayerLock::KillTimeout::enabled = currentWeaponSetting.killTimeoutEnabled;
+	Settings::Aimbot::PlayerLock::KillTimeout::value = currentWeaponSetting.killTimeoutValue;
 
 	for (int i = (int) Hitbox::HITBOX_HEAD; i <= (int) Hitbox::HITBOX_ARMS; i++)
 		Settings::Aimbot::AutoWall::bones[i] = currentWeaponSetting.autoWallBones[i];

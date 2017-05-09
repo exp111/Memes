@@ -184,7 +184,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		weaponSetting["SpreadLimit"]["Value"] = i.second.spreadLimitValue;
 		weaponSetting["AutoSlow"]["Enabled"] = i.second.autoSlow;
 		weaponSetting["AutoSlow"]["MinDamage"] = i.second.autoSlowMinDamage;
-		weaponSetting["StickyAim"]["Enabled"] = i.second.stickyAimEnabled;
+		weaponSetting["PlayerLock"]["Enabled"] = i.second.playerLockEnabled;
 		weaponSetting["KillTimeout"]["Enabled"] = i.second.killTimeoutEnabled;
 		weaponSetting["KillTimeout"]["Value"] = i.second.killTimeoutValue;
 		weaponSetting["Prediction"]["Enabled"] = i.second.predEnabled;
@@ -586,7 +586,7 @@ void Settings::LoadConfig(std::string path)
 				weaponSetting["AutoSlow"]["MinDamage"].asFloat(),
 				weaponSetting["SpreadLimit"]["Enabled"].asBool(),
 				weaponSetting["SpreadLimit"]["Value"].asFloat(),
-				weaponSetting["StickyAim"]["Enabled"].asBool(),
+				weaponSetting["PlayerLock"]["Enabled"].asBool(),
 				weaponSetting["KillTimeout"]["Enabled"].asBool(),
 				weaponSetting["KillTimeout"]["Value"].asFloat(),
 				weaponSetting["Prediction"]["Enabled"].asBool()
