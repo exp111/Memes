@@ -283,8 +283,8 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
 			continue;
 		
-		if (Settings::Aimbot::HitScan::enabled)
-			HitScan(player, targetBone);
+		//if (Settings::Aimbot::HitScan::enabled)
+		//	HitScan(player, targetBone);
 
 		Vector eVecTarget = player->GetBonePosition((int) targetBone);
 		Vector pVecTarget = localplayer->GetEyePosition();
