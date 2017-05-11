@@ -147,6 +147,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		#define weaponSetting settings["Aimbot"]["weapons"][Util::Items::GetItemName((enum ItemDefinitionIndex) i.first)]
 		weaponSetting["Enabled"] = i.second.enabled;
 		weaponSetting["Silent"] = i.second.silent;
+		weaponSetting["pSilent"] = i.second.pSilent;
 		weaponSetting["Friendly"] = i.second.friendly;
 		weaponSetting["Closest Bone"] = i.second.closestBone;
 		weaponSetting["HitScan"] = i.second.hitScan;
@@ -522,7 +523,7 @@ void Settings::LoadConfig(std::string path)
 	Fonts::SetupFonts();
 
 	Settings::Aimbot::weapons = {
-			{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false, 0.4, false} },
+			{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false, 0.4, false} },
 };
 
 	for (Json::ValueIterator itr = settings["Aimbot"]["weapons"].begin(); itr != settings["Aimbot"]["weapons"].end(); itr++)
@@ -548,6 +549,7 @@ void Settings::LoadConfig(std::string path)
 		AimbotWeapon_t weapon = {
 				weaponSetting["Enabled"].asBool(),
 				weaponSetting["Silent"].asBool(),
+				weaponSetting["pSilent"].asBool(),
 				weaponSetting["Friendly"].asBool(),
 				weaponSetting["Closest Bone"].asBool(),
 				weaponSetting["HitScan"].asBool(),

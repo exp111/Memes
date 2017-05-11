@@ -416,6 +416,9 @@ void Aimbot::RenderTab()
 				if (ImGui::Checkbox("Silent Aim", &silent))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Prevents the camera from locking to an enemy, doesn't work for demos");
+				if (ImGui::Checkbox("pSilent", &pSilent))
+					UI::UpdateWeaponSettings();
+				SetTooltip("Works only on community servers. Prevents the camera from locking to an enemy.")
 				if (ImGui::Checkbox("Smoke Check", &smokeCheck))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Ignore players that are blocked by smoke");

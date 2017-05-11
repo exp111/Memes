@@ -147,7 +147,7 @@ enum class SpammerType : int
 
 struct AimbotWeapon_t
 {
-	bool enabled, silent, friendly, closestBone, hitScan;
+	bool enabled, silent, pSilent, friendly, closestBone, hitScan;
 	Bone bone;
 	SmoothType smoothType;
 	ButtonCode_t aimkey;
@@ -155,7 +155,7 @@ struct AimbotWeapon_t
 	float smoothAmount, smoothSaltMultiplier, errorMarginValue, autoAimFov, aimStepValue, rcsAmountX, rcsAmountY, autoWallValue, autoSlowMinDamage, rcsAdaptiveSpeed, rcsAdaptiveLimit, spreadLimitValue, killTimeoutValue;
 	bool autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallBones[6], autoAimRealDistance, autoSlow, spreadLimitEnabled, stickyAimEnabled, killTimeoutEnabled, predEnabled;
 
-	AimbotWeapon_t(bool enabled, bool silent, bool friendly, bool closestBone, bool hitScan, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
+	AimbotWeapon_t(bool enabled, bool silent, bool pSilent, bool friendly, bool closestBone, bool hitScan, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
 		   bool smoothEnabled, float smoothValue, SmoothType smoothType, bool smoothSaltEnabled, float smoothSaltMultiplier,
 		   bool errorMarginEnabled, float errorMarginValue,
 		   bool autoAimEnabled, float autoAimValue, bool aimStepEnabled, float aimStepValue,
@@ -167,6 +167,7 @@ struct AimbotWeapon_t
 	{
 		this->enabled = enabled;
 		this->silent = silent;
+		this->pSilent = pSilent;
 		this->friendly = friendly;
 		this->closestBone = closestBone;
 		this->hitScan = hitScan;
@@ -227,6 +228,7 @@ struct AimbotWeapon_t
 
 		return this->enabled == another.enabled &&
 			this->silent == another.silent &&
+			this->pSilent == another.pSilent &&
 			this->friendly == another.friendly &&
 			this->closestBone == another.closestBone &&
 			this->hitScan == another.hitScan &&
@@ -340,6 +342,7 @@ namespace Settings
 	{
 		extern bool enabled;
 		extern bool silent;
+		extern bool pSilent;
 		extern bool friendly;
 		extern bool closestBone;
 		extern Bone bone;
