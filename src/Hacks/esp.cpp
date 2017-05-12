@@ -873,10 +873,7 @@ void ESP::DrawHeaddot(C_BasePlayer* player)
 		return;
 
 	bool bIsVisible = false;
-	if (Settings::ESP::Filters::visibilityCheck
-			 			|| (!Settings::ESP::Filters::legitModeToggle
-			 					&& Settings::ESP::Filters::legit)
-			 			|| !inputSystem->IsButtonDown(Settings::ESP::Filters::legitModeToggleKey))
+	if (Settings::ESP::Filters::visibilityCheck || !Visuals::LegitModeToggleVisible())
 		bIsVisible = Entity::IsVisible(player, Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck);
 
 	Draw::FilledCircle(Vector2D(head2D.x, head2D.y), 10, Settings::ESP::HeadDot::size, Color::FromImColor(GetESPPlayerColor(player, bIsVisible)));
@@ -931,10 +928,7 @@ void ESP::DrawSounds()
 			continue;
 
 		bool bIsVisible = false;
-		if (Settings::ESP::Filters::visibilityCheck
-				 				|| (!Settings::ESP::Filters::legitModeToggle
-				 						&& Settings::ESP::Filters::legit)
-				 				|| !inputSystem->IsButtonDown(Settings::ESP::Filters::legitModeToggleKey))
+		if (Settings::ESP::Filters::visibilityCheck || !Visuals::LegitModeToggleVisible()
 			bIsVisible = Entity::IsVisible(player, Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck);
 
 		float percent = (float)diff / (float)Settings::ESP::Sounds::time;
