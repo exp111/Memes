@@ -6,6 +6,7 @@
 // Default aimbot settings
 bool Settings::Aimbot::enabled = false;
 bool Settings::Aimbot::silent = false;
+bool Settings::Aimbot::pSilent = false;
 bool Settings::Aimbot::friendly = false;
 bool Settings::Aimbot::closestBone = false;
 bool Settings::Aimbot::HitScan::enabled = false;
