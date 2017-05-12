@@ -251,14 +251,9 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 			&& temp
 			&& !temp->GetDormant()
 			&& !temp->GetImmune()
-			&& temp->GetAlive())
-		{
-			//if (Settings::Aimbot::HitScan::enabled)
-			//	HitScan(temp, targetBone);
-
-			if (Entity::IsVisible(temp, targetBone))
+			&& temp->GetAlive()
+			&& Entity::IsVisible(temp, targetBone))
 				player = temp;
-		}
 		else
 		if (!player
 			|| player == localplayer
