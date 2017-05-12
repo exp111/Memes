@@ -1,5 +1,11 @@
 #include "visualstab.h"
-
+bool Visuals::LegitModeToggleVisible() {
+ 	if (!Settings::ESP::Filters::legitModeToggle && Settings::ESP::Filters::legit)
+ 			return false;
+ 		else if (!inputSystem->IsButtonDown(Settings::ESP::Filters::legitModeToggleKey))
+ 			return false;
+ 		return true;
+}
 void Visuals::RenderTab()
 {
 	const char* BoxTypes[] = { "Flat 2D", "Frame 2D", "Box 3D" };
@@ -71,6 +77,8 @@ void Visuals::RenderTab()
 				SetTooltip("Show localplayer");
 				ImGui::Checkbox("Legit Mode", &Settings::ESP::Filters::legit);
 				SetTooltip("Hide enemies behind walls");
+				ImGui::Checkbox("Legit Mode Toggle", &Settings::ESP::Filters::legitModeToggle);
+				SetTooltip("Legit mode toggle key");
 			}
 			ImGui::NextColumn();
 			{
@@ -82,6 +90,7 @@ void Visuals::RenderTab()
 				SetTooltip("Mark players behind smokes as invisible");
 				ImGui::Checkbox("Visiblity Check", &Settings::ESP::Filters::visibilityCheck);
 				SetTooltip("Change color of outlined box based on whether you see them");
+				UI::KeyBindButton(&Settings::ESP::Filters::legitModeToggleKey);
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();

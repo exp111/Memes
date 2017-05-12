@@ -583,6 +583,8 @@ namespace Settings
 		namespace Filters
 		{
 			extern bool legit;
+			extern bool legitModeToggle;
+			extern ButtonCode_t legitModeToggleKey;
 			extern bool visibilityCheck;
 			extern bool smokeCheck;
 			extern bool flashCheck;

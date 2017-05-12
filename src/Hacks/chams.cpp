@@ -100,7 +100,7 @@ void DrawPlayer(void* thisptr, void* context, void *state, const ModelRenderInfo
 		hidden_material->AlphaModulate(0.5f);
 	}
 
-	if (!Settings::ESP::Filters::legit && (Settings::ESP::Chams::type == ChamsType::CHAMS_XQZ || Settings::ESP::Chams::type == ChamsType::CHAMS_FLAT_XQZ))
+	if ((!Settings::ESP::Filters::legit && (Settings::ESP::Chams::type == ChamsType::CHAMS_XQZ || Settings::ESP::Chams::type == ChamsType::CHAMS_FLAT_XQZ)) || Visuals::LegitModeToggleVisible())
 	{
 		modelRender->ForcedMaterialOverride(hidden_material);
 		modelRenderVMT->GetOriginalMethod<DrawModelExecuteFn>(21)(thisptr, context, state, pInfo, pCustomBoneToWorld);

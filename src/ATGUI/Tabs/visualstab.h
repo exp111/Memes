@@ -4,5 +4,6 @@
 
 namespace Visuals
 {
+	bool LegitModeToggleVisible();
 	void RenderTab();
 }

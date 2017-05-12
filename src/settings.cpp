@@ -264,6 +264,8 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	LoadColor(settings["ESP"]["Glow"]["defuser_color"], Settings::ESP::Glow::defuserColor);
 	LoadColor(settings["ESP"]["Glow"]["chicken_color"], Settings::ESP::Glow::chickenColor);
 	settings["ESP"]["Filters"]["legit"] = Settings::ESP::Filters::legit;
+	settings["ESP"]["Filters"]["legitModeToggle"] = Settings::ESP::Filters::legitModeToggle;
+	settings["ESP"]["Filters"]["legitModeToggleKey"] = Util::GetButtonName(Settings::ESP::Filters::legitModeToggleKey);
 	settings["ESP"]["Filters"]["visibility_check"] = Settings::ESP::Filters::visibilityCheck;
 	settings["ESP"]["Filters"]["smoke_check"] = Settings::ESP::Filters::smokeCheck;
 	settings["ESP"]["Filters"]["enemies"] = Settings::ESP::Filters::enemies;
@@ -665,6 +667,8 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings["ESP"]["Glow"]["grenade_color"], &Settings::ESP::Glow::grenadeColor);
 	GetVal(settings["ESP"]["Glow"]["defuser_color"], &Settings::ESP::Glow::defuserColor);
 	GetVal(settings["ESP"]["Glow"]["chicken_color"], &Settings::ESP::Glow::chickenColor);
+	GetVal(settings["ESP"]["Filters"]["legitModeToggle"], &Settings::ESP::Filters::legitModeToggle);
+	GetButtonCode(settings["ESP"]["Filters"]["legitModeToggleKey"], &Settings::ESP::Filters::legitModeToggleKey);
 	GetVal(settings["ESP"]["Filters"]["legit"], &Settings::ESP::Filters::legit);
 	GetVal(settings["ESP"]["Filters"]["visibility_check"], &Settings::ESP::Filters::visibilityCheck);
 	GetVal(settings["ESP"]["Filters"]["smoke_check"], &Settings::ESP::Filters::smokeCheck);

@@ -82,6 +82,8 @@ int Settings::ESP::Sounds::time = 1000;
 bool Settings::NoScopeBorder::enabled = false;
 bool Settings::ESP::HeadDot::enabled = false;
 float Settings::ESP::HeadDot::size = 2.f;
+bool Settings::ESP::Filters::legitModeToggle = false;
+ButtonCode_t Settings::ESP::Filters::legitModeToggleKey = ButtonCode_t::KEY_F;
 
 struct Footstep
 {
@@ -399,7 +401,7 @@ void ESP::DrawPlayer(int index, C_BasePlayer* player, IEngineClient::player_info
 		return;
 
 	bool bIsVisible = false;
-	if (Settings::ESP::Filters::visibilityCheck || Settings::ESP::Filters::legit)
+	if (Settings::ESP::Filters::visibilityCheck || !Visuals::LegitModeToggleVisible())
 	{
 		bIsVisible = Entity::IsVisible(player, Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck);
 		if (!bIsVisible && Settings::ESP::Filters::legit)
@@ -871,7 +873,10 @@ void ESP::DrawHeaddot(C_BasePlayer* player)
 		return;
 
 	bool bIsVisible = false;
-	if (Settings::ESP::Filters::visibilityCheck || Settings::ESP::Filters::legit)
+	if (Settings::ESP::Filters::visibilityCheck
+			 			|| (!Settings::ESP::Filters::legitModeToggle
+			 					&& Settings::ESP::Filters::legit)
+			 			|| !inputSystem->IsButtonDown(Settings::ESP::Filters::legitModeToggleKey))
 		bIsVisible = Entity::IsVisible(player, Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck);
 
 	Draw::FilledCircle(Vector2D(head2D.x, head2D.y), 10, Settings::ESP::HeadDot::size, Color::FromImColor(GetESPPlayerColor(player, bIsVisible)));
@@ -926,7 +931,10 @@ void ESP::DrawSounds()
 			continue;
 
 		bool bIsVisible = false;
-		if (Settings::ESP::Filters::visibilityCheck || Settings::ESP::Filters::legit)
+		if (Settings::ESP::Filters::visibilityCheck
+				 				|| (!Settings::ESP::Filters::legitModeToggle
+				 						&& Settings::ESP::Filters::legit)
+				 				|| !inputSystem->IsButtonDown(Settings::ESP::Filters::legitModeToggleKey))
 			bIsVisible = Entity::IsVisible(player, Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck);
 
 		float percent = (float)diff / (float)Settings::ESP::Sounds::time;
