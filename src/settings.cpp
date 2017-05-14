@@ -404,6 +404,10 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings["SkinChanger"]["Models"]["enabled"] = Settings::Skinchanger::Models::enabled;
 	settings["SkinChanger"]["Skins"]["perTeam"] = Settings::Skinchanger::Skins::perTeam;
 
+	settings["WalkBot"]["enabled"] = Settings::WalkBot::enabled;
+	settings["WalkBot"]["autobuy"] = Settings::WalkBot::autobuy;
+ 	settings["WalkBot"]["autobuyAt"] = Settings::WalkBot::autobuyAt;
+
 	for (const auto& item: Settings::Skinchanger::skinsCT)
 	{
 		const AttribItem_t& skin = item.second;
@@ -888,6 +892,10 @@ void Settings::LoadConfig(std::string path)
 	GetVal(settings["SkinChanger"]["Skins"]["enabled"], &Settings::Skinchanger::Skins::enabled);
 	GetVal(settings["SkinChanger"]["Models"]["enabled"], &Settings::Skinchanger::Models::enabled);
 	GetVal(settings["SkinChanger"]["Skins"]["perTeam"], &Settings::Skinchanger::Skins::perTeam);
+
+	GetVal(settings["WalkBot"]["enabled"], &Settings::WalkBot::enabled);
+	GetVal(settings["WalkBot"]["autobuy"], &Settings::WalkBot::autobuy);
+	GetVal(settings["WalkBot"]["autobuyAt"], &Settings::WalkBot::autobuyAt);
 
 	GetVal(settings["ShowRanks"]["enabled"], &Settings::ShowRanks::enabled);
 

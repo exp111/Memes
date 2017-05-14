@@ -28,6 +28,7 @@ bool Hooks::CreateMove(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 		Airstuck::CreateMove(cmd);
 		FakeLag::CreateMove(cmd);
 		ESP::CreateMove(cmd);
+		Walkbot::CreateMove(cmd);
 		PredictionSystem::EndPrediction();
 
 		EdgeJump::PostPredictionCreateMove(cmd);

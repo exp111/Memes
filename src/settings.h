@@ -849,6 +849,14 @@ namespace Settings
 		extern std::unordered_map<ItemDefinitionIndex, AttribItem_t, Util::IntHash<ItemDefinitionIndex>> skinsT;
 	}
 
+	namespace WalkBot
+	{
+		extern bool enabled;
+		extern bool forceReset;
+		extern bool autobuy;
+		extern int autobuyAt;
+	}
+
 	namespace ShowRanks
 	{
 		extern bool enabled;

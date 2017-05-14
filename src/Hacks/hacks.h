@@ -37,3 +37,4 @@
 #include "triggerbot.h"
 #include "valvedscheck.h"
 #include "view.h"
+#include "walkbot.h"
