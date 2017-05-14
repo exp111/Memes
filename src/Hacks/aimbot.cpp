@@ -357,7 +357,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		}
 	}
 	savedTarget = closestEntity;
-	if (killTime > globalVars->curtime && Settings::Aimbot::StickyAim::KillTimeout::enabled)
+	if (killTime > globalVars->curtime && Settings::Aimbot::StickyAim::KillTimeout::enabled && Settings::Aimbot::StickyAim::enabled)
 		return NULL;
 	return closestEntity;
 

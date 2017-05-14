@@ -38,7 +38,7 @@ int __attribute__((constructor)) AimTuxInit()
 	Hooker::HookSwapWindow();
 	Hooker::HookPollEvent();
 
-	cvar->ConsoleColorPrintf(ColorRGBA(150, 255, 150), "AimTux was successfully injected.\n");
+	cvar->ConsoleColorPrintf(ColorRGBA(150, 255, 150), "Antario was successfully injected.\n");
 
 	ModSupport::OnInit();
 
@@ -141,5 +141,5 @@ void __attribute__((destructor)) AimTuxShutdown()
 	for (ptrdiff_t off = 0; off < 0x2; off++)
 		Util::ProtectAddr(CamThinkSvCheatsCheck + off, PROT_READ | PROT_EXEC);
 
-	cvar->ConsoleColorPrintf(ColorRGBA(255, 150, 150), "AimTux has been unloaded successfully.\n");
+	cvar->ConsoleColorPrintf(ColorRGBA(255, 150, 150), "Antario has been unloaded successfully.\n");
 }

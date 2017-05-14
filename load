@@ -7,12 +7,12 @@ if [ -z "$csgo_pid" ]; then
 fi
 
 if [ ! -d ".git" ]; then
-    /bin/echo "We have detected that you have downloaded aimtux-master.zip from the GitHub website. This is the WRONG way to download AimTux. Please download AimTux with the command 'git clone --recursive https://github.com/AimTuxOfficial/AimTux'"
+    /bin/echo "We have detected that you have downloaded antario-master.zip from the GitHub website. This is the WRONG way to download Antario. Please download Antario with the command 'git clone --recursive https://github.com/Wando1423/Antario'"
 fi
 
 #Credit: Aixxe @ aixxe.net
-if grep -q libAimTux.so /proc/$csgo_pid/maps; then
-    /bin/echo -e "\e[33mAimTux is already injected... Aborting...\e[0m"
+if grep -q libAntario.so /proc/$csgo_pid/maps; then
+    /bin/echo -e "\e[33mAntario is already injected... Aborting...\e[0m"
     exit
 fi
 
@@ -20,7 +20,7 @@ input="$(
 sudo gdb -n -q -batch \
   -ex "attach $csgo_pid" \
   -ex "set \$dlopen = (void*(*)(char*, int)) dlopen" \
-  -ex "call \$dlopen(\"$(pwd)/libAimTux.so\", 1)" \
+  -ex "call \$dlopen(\"$(pwd)/libAntario.so\", 1)" \
   -ex "detach" \
   -ex "quit"
 )"

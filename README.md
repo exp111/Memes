@@ -1,19 +1,14 @@
-![banner](http://aimtux.net/images/banner.png)
+## What is Antario?
 
-[![Join the chat at https://www.gitter.im/AimTuxOfficial/lobby](https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg?style=flat-square)](https://www.gitter.im/AimTuxOfficial/lobby)
-
-Want to chat or play with other AimTux users? Join us on Gitter!
-
-## What is AimTux?
-
-AimTux is a fully featured internal hack for *CounterStrike : Global Offensive* written in C++.
+Antario is a fork of Aimtux with more features added. 
+Aimtux is a fully featured internal hack for *CounterStrike : Global Offensive* written in C++.
 
 
 ## Compiling
 
 **Note:** _Do NOT download or compile as the root user_
 
-#### Download the dependencies required to build AimTux:
+#### Download the dependencies required to build Antario:
 
 __Ubuntu-Based / Debian:__
 ```bash
@@ -40,14 +35,14 @@ sudo emerge cmake dev-vcs/git gdb libsdl2 mesa
 ```
 
 
-#### Download AimTux(Wando build):
+#### Download Antario:
 
 ```bash
-git clone --recursive https://github.com/Wando1423/AimTux
+git clone --recursive https://github.com/Wando1423/Antario
 ```
 
 ```bash
-cd AimTux
+cd Antario
 ```
 
 
@@ -69,10 +64,10 @@ make -j 4
 
 First of all, make sure CSGO is open, it doesn't matter whether you're in game or not.
 
-Navigate to the directory where AimTux was built if you haven't ready.
+Navigate to the directory where Antario was built if you haven't ready.
 
 ```bash
-cd AimTux
+cd Antario
 ```
 
 Now, you can inject the hack with the `load` script
@@ -87,13 +82,11 @@ You should see a lot of text being printed out, most of which is not important,
 
 If the injection was successfull you'll see a message at the bottom saying `Successfully injected!`, however, if the message says `Injection failed`, then you've most likely done something wrong.
 
-Now, go back into csgo, if you're in the main menu of the game you should see the AimTux banner in the top left like so:
-
-![this](http://aimtux.net/images/screenshot4.png)
+Now, go back into csgo, if you're in the main menu of the game you should see the Antario banner in the top left.
 
 ## Using the hack
 
-Now that AimTux has been injected into the game, press <kbd>Insert</kbd> on your keyboard to open the hack menu (<kbd>ALT</kbd>+<kbd>I</kbd> if you're using a laptop).
+Now that Antario has been injected into the game, press <kbd>Insert</kbd> on your keyboard to open the hack menu (<kbd>ALT</kbd>+<kbd>I</kbd> if you're using a laptop).
 
 If you want to change skins, create and load configs or open the player list, you can find those buttons at the top of the screen.
 
@@ -105,13 +98,13 @@ If you wish to unload the hack from the game, you can do so by entering the comm
 ./uload
 ```
 
-## Updating AimTux
+## Updating Antario
 
-We add and improve and fix things almost every day with AimTux. We don't have a fixed release schedule, we just add things to it when they're ready. Because of this, AimTux will need to update a lot.
+We add and improve and fix things almost every day with Antario. We don't have a fixed release schedule, we just add things to it when they're ready. Because of this, Antario will need to update a lot.
 
 If you don't update once a day then we recommend at LEAST update once a week, and ALWAYS update after a CSGO update, just to make sure we fix anything that's broken.
 
-We provide a script included in the AimTux folder that updates AimTux for you. To use it, just run:
+We provide a script included in the Antario folder that updates Antario for you. To use it, just run:
 
 ```
 ./update
@@ -143,7 +136,7 @@ To see hidden folders inside your home folder, press <kbd>CTRL</kbd>+<kbd>H</kbd
 Each `config.json` is stored in the folder named after them map name.
 
 To add a config, copy the folder containing it to `~/.config/AimTuxGH`
-## Contributing to AimTux
+## Contributing to Antario
 
 If you wish to contribute code to this opensource project, please keep some things mind before creating a *pull request*:
  - Make sure you're using the correct [code style](https://github.com/AimTuxOfficial/AimTux/wiki/Code-Style).

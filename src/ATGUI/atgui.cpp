@@ -51,7 +51,7 @@ void UI::SwapWindow()
 		return;
 
 	if (Settings::Watermark::enabled)	
-		Draw::ImDrawText(ImVec2(4.f, 4.f), ImColor(0, 200, 255, 255), "Wando's AimTux", NULL, 0.0f, NULL, ImFontFlags_Shadow);
+		Draw::ImDrawText(ImVec2(4.f, 4.f), ImColor(0, 200, 255, 255), "Antario", NULL, 0.0f, NULL, ImFontFlags_Shadow);
 }
 
 void UI::SetVisible(bool visible)

@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ ! -d ".git" ]; then
-    echo "We have detected that you have downloaded aimtux-master.zip from the GitHub website. This is the WRONG way to download AimTux. Please download AimTux with the command 'git clone --recursive https://github.com/AimTuxOfficial/AimTux.git'"
+    echo "We have detected that you have downloaded antario-master.zip from the GitHub website. This is the WRONG way to download Antario. Please download Antario with the command 'git clone --recursive https://github.com/Wando1423/Antario.git'"
     exit
 else
     git pull
