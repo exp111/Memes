@@ -928,7 +928,7 @@ void ESP::DrawSounds()
 			continue;
 
 		bool bIsVisible = false;
-		if (Settings::ESP::Filters::visibilityCheck || !Visuals::LegitModeToggleVisible()
+		if (Settings::ESP::Filters::visibilityCheck || !Visuals::LegitModeToggleVisible())
 			bIsVisible = Entity::IsVisible(player, Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck);
 
 		float percent = (float)diff / (float)Settings::ESP::Sounds::time;
