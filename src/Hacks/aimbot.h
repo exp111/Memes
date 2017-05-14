@@ -20,6 +20,7 @@ namespace Aimbot
 	void AutoShoot(C_BasePlayer* player, C_BaseCombatWeapon* activeWeapon, CUserCmd* cmd);
 	void ShootCheck(C_BaseCombatWeapon* activeWeapon, CUserCmd* cmd);
 	void NoShoot(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* player, CUserCmd* cmd);
+	void AutoCockRevolver( C_BaseCombatWeapon* activeWeapon, C_BasePlayer* localplayer, CUserCmd* cmd);
 
 	void CreateMove(CUserCmd* cmd);
 	void FireGameEvent(IGameEvent* event);

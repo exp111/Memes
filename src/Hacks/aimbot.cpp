@@ -51,12 +51,15 @@ bool Settings::Aimbot::StickyAim::enabled = false;
 bool Settings::Aimbot::StickyAim::KillTimeout::enabled = false;
 float Settings::Aimbot::StickyAim::KillTimeout::value = 0.4;
 bool Settings::Aimbot::Prediction::enabled = false;
+bool Settings::Aimbot::AutoCockRevolver::enabled = false;
+
 
 bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
 
 bool shouldAim;
-float killTime = 0;
+float killTime = 0.0f;
+float autoCockDifference = 0.0f;
 QAngle AimStepLastAngle;
 QAngle RCSLastPunch;
 C_BasePlayer* savedTarget = NULL;
@@ -71,7 +74,7 @@ std::unordered_map<Hitbox, std::vector<const char*>, Util::IntHash<Hitbox>> hitb
 };
 
 std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> Settings::Aimbot::weapons = {
-		{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false, 0.4, false} },
+		{ ItemDefinitionIndex::INVALID, { false, false, false, false, false, false, Bone::BONE_HEAD, ButtonCode_t::MOUSE_MIDDLE, false, false, 1.0f, SmoothType::SLOW_END, false, 0.0f, false, 0.0f, true, 180.0f, false, 25.0f, false, false, 2.0f, 2.0f, false, 0.1, 1.5, false, false, false, false, false, false, false, false, false, 10.0f, false, false, 5.0f, false, 0, false, false, 0.4, false} },
 };
 
 static const char* targets[] = { "pelvis", "", "", "spine_0", "spine_1", "spine_2", "spine_3", "neck_0", "head_0" };
@@ -437,6 +440,27 @@ void Aimbot::AimStep(C_BasePlayer* player, QAngle& angle, CUserCmd* cmd)
 	angle = AimStepLastAngle;
 }
 
+void Aimbot::AutoCockRevolver(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* localplayer, CUserCmd* cmd)
+{
+	if (!Settings::Aimbot::AutoCockRevolver::enabled)
+		return;
+
+	if (*activeWeapon->GetItemDefinitionIndex() != ItemDefinitionIndex::WEAPON_REVOLVER)
+		return;
+	
+	if (autoCockDifference == 0.0f)
+		autoCockDifference = globalVars->curtime;
+
+	if (autoCockDifference >= globalVars->curtime)
+	{
+		cmd->buttons |= IN_ATTACK;
+	}
+	else 
+	{
+		autoCockDifference = globalVars->curtime + 0.2421f;
+	}
+}
+
 float RandomNumber(float Min, float Max)
 {
 	return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
@@ -716,6 +740,7 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 	Aimbot::Smooth(player, angle, cmd);
 	Aimbot::ShootCheck(activeWeapon, cmd);
 	Aimbot::NoShoot(activeWeapon, player, cmd);
+	Aimbot::AutoCockRevolver(activeWeapon, player, cmd);
 
 	Math::NormalizeAngles(angle);
 	Math::ClampAngles(angle);
@@ -791,6 +816,7 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::RCS::adaptive = currentWeaponSetting.rcsAdaptive;
 	Settings::Aimbot::RCS::adaptiveSpeed = currentWeaponSetting.rcsAdaptiveSpeed;
 	Settings::Aimbot::RCS::adaptiveLimit = currentWeaponSetting.rcsAdaptiveLimit;
+	Settings::Aimbot::AutoCockRevolver::enabled = currentWeaponSetting.autoCockRevolver;
 	Settings::Aimbot::NoShoot::enabled = currentWeaponSetting.noShootEnabled;
 	Settings::Aimbot::IgnoreJump::enabled = currentWeaponSetting.ignoreJumpEnabled;
 	Settings::Aimbot::Smooth::Salting::enabled = currentWeaponSetting.smoothSaltEnabled;

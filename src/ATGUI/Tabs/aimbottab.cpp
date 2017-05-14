@@ -28,6 +28,7 @@ static float rcsAmountY = 2.0f;
 static bool rcsAdaptive = false;
 static float rcsAdaptiveSpeed = 0.1f;
 static float rcsAdaptiveLimit = 1.5f;
+static bool autoCockRevolver = false;
 static bool autoPistolEnabled = false;
 static bool autoShootEnabled = false;
 static bool autoScopeEnabled = false;
@@ -81,6 +82,7 @@ void UI::ReloadWeaponSettings()
 	rcsAdaptive = Settings::Aimbot::weapons.at(index).rcsAdaptive;
 	rcsAdaptiveSpeed = Settings::Aimbot::weapons.at(index).rcsAdaptiveSpeed;
 	rcsAdaptiveLimit = Settings::Aimbot::weapons.at(index).rcsAdaptiveLimit;
+	autoCockRevolver = Settings::Aimbot::weapons.at(index).autoCockRevolver;
 	autoPistolEnabled = Settings::Aimbot::weapons.at(index).autoPistolEnabled;
 	autoShootEnabled = Settings::Aimbot::weapons.at(index).autoShootEnabled;
 	autoScopeEnabled = Settings::Aimbot::weapons.at(index).autoScopeEnabled;
@@ -115,7 +117,7 @@ void UI::UpdateWeaponSettings()
 			errorMarginEnabled, errorMarginValue, 
 			autoAimEnabled, autoAimValue, aimStepEnabled, aimStepValue, 
 			rcsEnabled, rcsAlwaysOn, rcsAmountX, rcsAmountY, rcsAdaptive, rcsAdaptiveSpeed, rcsAdaptiveLimit, 
-			autoPistolEnabled, autoShootEnabled, autoScopeEnabled, 
+			autoCockRevolver, autoPistolEnabled, autoShootEnabled, autoScopeEnabled, 
 			noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, 
 			autoWallEnabled, autoWallValue, autoAimRealDistance, autoSlow, 
 			autoSlowMinDamage, spreadLimitEnabled, spreadLimitValue, stickyAimEnabled, killTimeoutEnabled, killTimeoutValue, predEnabled
@@ -393,6 +395,12 @@ void Aimbot::RenderTab()
 			{
 				switch (currentWeapon)
 				{
+					case ItemDefinitionIndex::WEAPON_REVOLVER:
+					{
+						if (ImGui::Checkbox("Auto Cock Revolver", &autoCockRevolver))
+							UI::UpdateWeaponSettings();
+						SetTooltip("Automatically cocks revolver so it shoots instantly");
+					}
 					case ItemDefinitionIndex::INVALID:
 					case ItemDefinitionIndex::WEAPON_DEAGLE:
 					case ItemDefinitionIndex::WEAPON_ELITE:
@@ -403,7 +411,6 @@ void Aimbot::RenderTab()
 					case ItemDefinitionIndex::WEAPON_USP_SILENCER:
 					case ItemDefinitionIndex::WEAPON_P250:
 					case ItemDefinitionIndex::WEAPON_CZ75A:
-					case ItemDefinitionIndex::WEAPON_REVOLVER:
 						if (ImGui::Checkbox("Auto Pistol", &autoPistolEnabled))
 							UI::UpdateWeaponSettings();
 						SetTooltip("Automatically shoots the pistol when holding fire");
@@ -411,7 +418,11 @@ void Aimbot::RenderTab()
 					default:
 						break;
 				}
+				/*if (currentWeapon = ItemDefinitionIndex::WEAPON_REVOLVER)
+				{
 
+				}
+*/
 				if (ImGui::Checkbox("Auto Shoot", &autoShootEnabled))
 					UI::UpdateWeaponSettings();
 				SetTooltip("Automatically shoots when locking to an enemy");
