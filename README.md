@@ -118,24 +118,24 @@ And it will download and compile without any effort. Once it's done, happy hacki
 Configs are stored in a hidden directory in your home folder. Specifically 
 
 ```
-~/.config/AimTux
+~/.config/Antario
 ```
 
 Each `config.json` is stored in a seperately named folder (The name you see in-game, in the config window). 
 
-To add a config, create a folder inside of the `~/.config/AimTux` folder with a name of your choice, and paste the `config.json` inside of that folder.
+To add a config, create a folder inside of the `~/.config/Antario` folder with a name of your choice, and paste the `config.json` inside of that folder.
 
 To see hidden folders inside your home folder, press <kbd>CTRL</kbd>+<kbd>H</kbd> when using a file manager.
 
 ## Grenade Configs
 
 ```
-~/.config/AimTuxGH
+~/.config/AntarioGH
 ```
 
 Each `config.json` is stored in the folder named after them map name.
 
-To add a config, copy the folder containing it to `~/.config/AimTuxGH`
+To add a config, copy the folder containing it to `~/.config/AntarioGH`
 ## Contributing to Antario
 
 If you wish to contribute code to this opensource project, please keep some things mind before creating a *pull request*:
