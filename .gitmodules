@@ -1,9 +1,6 @@
 [submodule "src/--force"]
 	path = src/--force
 	url = https://github.com/Wando1423/imgui
-[submodule "src/ImGui"]
-	path = src/ImGui
-	url = https://github.com/Wando1423/imgui
 [submodule "src/ImGUI"]
 	path = src/ImGUI
 	url = https://github.com/Wando1423/imgui
