@@ -102,6 +102,10 @@ void GetBestBone(C_BasePlayer* player, float& bestDamage, Bone& bestBone)
 			Bone bone = Entity::GetBoneByName(player, *it2);
 			Vector vecBone = player->GetBonePosition((int) bone);
 
+			if (Settings::Aimbot::HitScan::enabled && !Entity::IsVisible(player, bone))
+				return;
+
+
 			Autowall::FireBulletData data;
 			float damage = Autowall::GetDamage(vecBone, !Settings::Aimbot::friendly, data);
 
@@ -112,45 +116,6 @@ void GetBestBone(C_BasePlayer* player, float& bestDamage, Bone& bestBone)
 			}
 		}
 	}
-}
-
-void HitScan(C_BasePlayer* player, Bone& bestBone)
-{
-	bestBone = Settings::Aimbot::bone;
-
-	//if bone from settings is visible, just leave it
-	if (Entity::IsVisible(player, bestBone))
-		return;
-	
-	Bone bone;
-	
-	//fuckin pseudo. Don'do this kind of shit pls.
-	for (int i ; i < 7 ; i++)
-	{
-		switch (i)
-		{
-			case 1:
-				bone = Bone::BONE_HEAD;
-			case 2:
-				bone = Bone::BONE_NECK;
-			case 3:
-				bone = Bone::BONE_PELVIS;
-			case 4:
-				bone = Bone::BONE_UPPER_SPINAL_COLUMN;
-			case 5:
-				bone = Bone::BONE_MIDDLE_SPINAL_COLUMN;
-			case 6:
-				bone = Bone::BONE_LOWER_SPINAL_COLUMN;
-			case 7:
-				bone = Bone::BONE_HIP;
-			
-			if (Entity::IsVisible(player, bone))
-			{
-				bestBone = bone;
-				return;
-			}
-		}
-	}		
 }
 
 bool SpreadLimit(float spread, CUserCmd* cmd, C_BaseCombatWeapon* active_weapon) 
@@ -337,18 +302,28 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 
 		bestBone = static_cast<Bone>(Entity::GetBoneByName(player, targets[(int) targetBone]));
 
-		if (Settings::Aimbot::AutoWall::enabled)
+		if (Settings::Aimbot::AutoWall::enabled || Settings::Aimbot::HitScan::enabled)
 		{
 			float damage = 0.0f;
 			Bone bone;
 			GetBestBone(player, damage, bone);
 
-			if (damage >= bestDamage && damage >= Settings::Aimbot::AutoWall::value)
+			if (Settings::Aimbot::AutoWall::enabled)
 			{
-				bestDamage = damage;
-				bestBone = bone;
-				closestEntity = player;
+				if (damage >= bestDamage && damage >= Settings::Aimbot::AutoWall::value)
+				{
+					bestDamage = damage;
+					bestBone = bone;
+					closestEntity = player;
+				}
 			}
+			else
+				if (Settings::Aimbot::HitScan::enabled && damage >= bestDamage)
+				{
+					bestDamage = damage;
+					bestBone = bone;
+					closestEntity = player;
+				}
 		}
 		else
 		{
@@ -359,9 +334,12 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 			bestHp = hp;
 		}
 	}
+
 	savedTarget = closestEntity;
+
 	if (killTime > globalVars->curtime && Settings::Aimbot::StickyAim::KillTimeout::enabled && Settings::Aimbot::StickyAim::enabled)
 		return NULL;
+
 	return closestEntity;
 
 }

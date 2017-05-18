@@ -107,13 +107,22 @@ void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clamp)
 			factor =  360.0 / M_PHI;
 			angle.y = fmodf(globalVars->curtime * factor, 360.0);
 			break;
+		case AntiAimType_Y::SPIN_RANDOM:
+			factor = 360.0 / M_PHI;
+			random = rand() % 100;
+			if (random < 15)
+				random += rand() % 15;
+			else
+				factor *= random;
+			angle.y = fmodf(globalVars->curtime * factor, 360.0);
+			break;
 		case AntiAimType_Y::JITTER:
 			yFlip ? angle.y -= 90.0f : angle.y -= 270.0f;
 			break;
 		case AntiAimType_Y::CASUALJITTER:
-			yFlip ? angle.y -= 35.0f : angle.y -= -35.0f;
+			yFlip ? angle.y -= 35.0f : angle.y += 35.0f;
 			break;
-		case AntiAimType_Y::BACKJITTER:
+		case AntiAimType_Y::RANDOMBACKJITTER:
 			angle.y -= 180;
 			random = rand() % 100;
 			maxJitter = rand() % (85 - 70 + 1) + 70;
@@ -122,6 +131,26 @@ void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clamp)
 				angle.y -= temp;
 			else if (random < 85 + (rand() % 15 ))
 				angle.y += temp;
+			break;
+		case AntiAimType_Y::BACKJITTER:
+			random = rand() % 100;
+
+			// Small chance of starting fowards
+			if (random < 98)
+				// Look backwards
+				angle.y -= 180;
+
+			// Some jitter
+			if (random < 15)
+			{
+				float change = -70 + (rand() % (int)(140 + 1));
+				angle.y += change;
+			}
+			if (random == 69)
+			{
+				float change = -90 + (rand() % (int)(180 + 1));
+				angle.y += change;
+			}
 			break;
 		case AntiAimType_Y::SIDE:
 			yFlip ? angle.y += 90.f : angle.y -= 90.0f;
@@ -154,6 +183,34 @@ void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clamp)
 
 			if (trigger > 100.0f)
 				trigger = 0.0f;
+			break;
+		case AntiAimType_Y::LOWERBODY:
+			angle.y = *((C_BasePlayer*)entityList->GetClientEntity(engine->GetLocalPlayer()))->GetLowerBodyYawTarget() + rand() % 35 + 165;
+			break;
+		case AntiAimType_Y::LBYJITTER:
+			static C_BasePlayer* player = ((C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer()));
+			if (player->GetFlags() & FL_ONGROUND)
+				angle.y = *((C_BasePlayer*)entityList->GetClientEntity(engine->GetLocalPlayer()))->GetLowerBodyYawTarget() + rand() % 35 + 165;
+			else
+			{
+				random = rand() % 4;
+				switch (random)
+				{
+					case 1:
+						yFlip ? angle.y += 90.f : angle.y -= 90.0f;
+						break;
+					case 2:
+						yFlip ? angle.y -= 120.0f : angle.y -= 210.0f;						
+						break;
+					case 3:
+						factor =  360.0 / M_PHI;
+						factor *= 25;
+						angle.y = fmodf(globalVars->curtime * factor, 360.0);
+						break;
+					default:
+						angle.y -= 180.0f;
+				}
+			}
 			break;
 		case AntiAimType_Y::LISP:
 			clamp = false;
@@ -204,34 +261,7 @@ void DoAntiAimY(QAngle& angle, int command_number, bool bFlip, bool& clamp)
 			factor = (globalVars->curtime * 5000.0f);
 			angle.y = factor + 36000000.0f;
 			break;
-		case AntiAimType_Y::LOWERBODY:
-			angle.y = *((C_BasePlayer*)entityList->GetClientEntity(engine->GetLocalPlayer()))->GetLowerBodyYawTarget() + rand()%35 + 165;
-			break;
-		case AntiAimType_Y::LBYONGROUND:
-			static C_BasePlayer* player = ((C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer()));
-			if (player->GetFlags() & FL_ONGROUND)
-				angle.y = *((C_BasePlayer*)entityList->GetClientEntity(engine->GetLocalPlayer()))->GetLowerBodyYawTarget() + rand()%35 + 165;
-			else
-			{
-				static int aimType = rand() % 4;
-				switch (aimType)
-				{
-					case 1:
-						yFlip ? angle.y += 90.f : angle.y -= 90.0f;
-						break;
-					case 2:
-						yFlip ? angle.y -= 120.0f : angle.y -= 210.0f;						
-						break;
-					case 3:
-						factor =  360.0 / M_PHI;
-						factor *= 25;
-						angle.y = fmodf(globalVars->curtime * factor, 360.0);
-						break;
-					default:
-						angle.y -= 180.0f;
-				}
-			}
-			break;
+
 		default:
 			angle.y -= 0.0f;
 			break;
