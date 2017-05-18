@@ -174,7 +174,6 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 	C_BasePlayer* closestEntity = NULL;
 
-	// TODO Change the big value with a distance/fov slider
 	float bestFov = Settings::Aimbot::AutoAim::fov;
 	float bestRealDistance = Settings::Aimbot::AutoAim::fov * 5.f;
 	float bestDistance = 8192.0f;
@@ -185,16 +184,13 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 	if (!localplayer)
 		return NULL;
 
-	if (!Settings::Aimbot::silent && Settings::Aimbot::RCS::adaptive)
+	if (Settings::Aimbot::RCS::adaptive)
 	{
-		float adaptiveFov = Settings::Aimbot::AutoAim::fov;
-		float rcsAdaptiveSpeed = Settings::Aimbot::RCS::adaptiveSpeed;
-		float rcsAdaptiveLimit = Settings::Aimbot::RCS::adaptiveLimit;
-		
-
-		if (localplayer->GetShotsFired() > 0)
+		if (!Settings::Aimbot::silent)
 		{
-			adaptiveFov += localplayer->GetShotsFired() * rcsAdaptiveSpeed;
+			float adaptiveFov = Settings::Aimbot::AutoAim::fov;
+			static float rcsAdaptiveSpeed = Settings::Aimbot::RCS::adaptiveSpeed;
+			static float rcsAdaptiveLimit = Settings::Aimbot::RCS::adaptiveLimit;
 
 			if (adaptiveFov < rcsAdaptiveLimit) 
 			{
@@ -203,11 +199,19 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 			} 
 			else 
 			{
-				Settings::Aimbot::AutoAim::fov = rcsAdaptiveLimit;
-				bestFov = rcsAdaptiveLimit;
+
+				if (adaptiveFov < rcsAdaptiveLimit)
+				{
+					Settings::Aimbot::AutoAim::fov = adaptiveFov;
+					bestFov = adaptiveFov;
+				}
+				else
+				{
+					Settings::Aimbot::AutoAim::fov = rcsAdaptiveLimit;
+					bestFov = rcsAdaptiveLimit;
+				}
 			}
 		}
-
 	}
 
 	for (int i = 1; i < engine->GetMaxClients(); ++i)
