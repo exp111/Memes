@@ -155,7 +155,7 @@ struct AimbotWeapon_t
 	ButtonCode_t aimkey;
 	bool aimkeyOnly, smoothEnabled, smoothSaltEnabled, errorMarginEnabled, autoAimEnabled, aimStepEnabled, rcsEnabled, rcsAlwaysOn, rcsAdaptive;
 	float smoothAmount, smoothSaltMultiplier, errorMarginValue, autoAimFov, aimStepValue, rcsAmountX, rcsAmountY, autoWallValue, autoSlowMinDamage, rcsAdaptiveSpeed, rcsAdaptiveLimit,  spreadLimitValue, killTimeoutValue;
-	bool autoCockRevolver, autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallBones[6], autoAimRealDistance, autoSlow, spreadLimitEnabled, stickyAimEnabled, killTimeoutEnabled, predEnabled;
+	bool autoCockRevolver, autoPistolEnabled, autoShootEnabled, autoScopeEnabled, noShootEnabled, ignoreJumpEnabled, smokeCheck, flashCheck, autoWallEnabled, autoWallBones[6], autoAimRealDistance, autoSlow, spreadLimitEnabled, targetLockEnabled, killTimeoutEnabled, predEnabled;
 
 	AimbotWeapon_t(bool enabled, bool silent, bool pSilent, bool friendly, bool closestBone, bool hitScan, Bone bone, ButtonCode_t aimkey, bool aimkeyOnly,
 		   bool smoothEnabled, float smoothValue, SmoothType smoothType, bool smoothSaltEnabled, float smoothSaltMultiplier,
@@ -165,7 +165,7 @@ struct AimbotWeapon_t
 		   bool autoCockRevolver, bool autoPistolEnabled, bool autoShootEnabled, bool autoScopeEnabled,
 		   bool noShootEnabled, bool ignoreJumpEnabled, bool smokeCheck, bool flashCheck,
 		   bool autoWallEnabled, float autoWallValue, bool autoAimRealDistance, bool autoSlow,
-		   float autoSlowMinDamage, bool spreadLimitEnabled, float spreadLimitValue, bool stickyAimEnabled, bool killTimeoutEnabled, float killTimeoutValue, bool predEnabled, bool autoWallBones[6] = nullptr)
+		   float autoSlowMinDamage, bool spreadLimitEnabled, float spreadLimitValue, bool targetLockEnabled, bool killTimeoutEnabled, float killTimeoutValue, bool predEnabled, bool autoWallBones[6] = nullptr)
 	{
 		this->enabled = enabled;
 		this->silent = silent;
@@ -206,7 +206,7 @@ struct AimbotWeapon_t
 		this->autoWallValue = autoWallValue;
 		this->spreadLimitEnabled = spreadLimitEnabled;
 		this->spreadLimitValue = spreadLimitValue;
-		this->stickyAimEnabled = stickyAimEnabled;
+		this->targetLockEnabled = targetLockEnabled;
 		this->killTimeoutEnabled = killTimeoutEnabled;
 		this->killTimeoutValue = killTimeoutValue;
 		this->autoSlow = autoSlow;
@@ -268,7 +268,7 @@ struct AimbotWeapon_t
 			this->autoWallValue == another.autoWallValue &&
 			this->spreadLimitEnabled == another.spreadLimitEnabled &&
 			this->spreadLimitValue == another.spreadLimitValue &&
-			this->stickyAimEnabled == another.stickyAimEnabled &&
+			this->targetLockEnabled == another.targetLockEnabled &&
 			this->killTimeoutEnabled == another.killTimeoutEnabled &&
 			this->killTimeoutValue == another.killTimeoutValue &&
 			this->autoSlow == another.autoSlow &&
@@ -466,7 +466,7 @@ namespace Settings
 			extern bool enabled;
 		}
 
-		namespace StickyAim
+		namespace TargetLock
 		{
 			extern bool enabled;
 

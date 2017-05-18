@@ -47,9 +47,9 @@ bool Settings::Aimbot::AutoSlow::enabled = false;
 float Settings::Aimbot::AutoSlow::minDamage = 5.0f;
 bool Settings::Aimbot::SpreadLimit::enabled = false;
 float Settings::Aimbot::SpreadLimit::value = 0;
-bool Settings::Aimbot::StickyAim::enabled = false;
-bool Settings::Aimbot::StickyAim::KillTimeout::enabled = false;
-float Settings::Aimbot::StickyAim::KillTimeout::value = 0.4;
+bool Settings::Aimbot::TargetLock::enabled = false;
+bool Settings::Aimbot::TargetLock::KillTimeout::enabled = false;
+float Settings::Aimbot::TargetLock::KillTimeout::value = 0.4;
 bool Settings::Aimbot::Prediction::enabled = false;
 bool Settings::Aimbot::AutoCockRevolver::enabled = false;
 
@@ -159,6 +159,30 @@ float GetRealDistanceFOV(float distance, QAngle angle, CUserCmd* cmd)
 	return aimingAt.DistTo(aimAt);
 }
 
+bool PlayerCheck(C_BasePlayer* player, C_BasePlayer* localplayer, bool mustBe)
+{
+	if (mustBe)
+	{
+		if (player
+			&& player == localplayer
+			&& !player->GetDormant()
+			&& !player->GetImmune()
+			&& player->GetAlive())
+			return true;
+		else
+			return false;
+	}
+	else
+		if (!player
+			|| player == localplayer
+			|| player->GetDormant()
+			|| !player->GetAlive()
+			|| player->GetImmune())
+			return true;
+		else
+			return false;
+}
+
 Vector VelocityExtrapolate(C_BasePlayer* player, Vector aimPos)
 {
 	return aimPos + (player->GetVelocity() * globalVars->interval_per_tick);
@@ -177,7 +201,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 	float bestFov = Settings::Aimbot::AutoAim::fov;
 	float bestRealDistance = Settings::Aimbot::AutoAim::fov * 5.f;
 	float bestDistance = 8192.0f;
-	float killTimeout = Settings::Aimbot::StickyAim::KillTimeout::value;
+	float killTimeout = Settings::Aimbot::TargetLock::KillTimeout::value;
 	int bestHp = 100;
 
 
@@ -191,14 +215,11 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 			float adaptiveFov = Settings::Aimbot::AutoAim::fov;
 			static float rcsAdaptiveSpeed = Settings::Aimbot::RCS::adaptiveSpeed;
 			static float rcsAdaptiveLimit = Settings::Aimbot::RCS::adaptiveLimit;
+			int shotsFired = localplayer->GetShotsFired();
 
-			if (adaptiveFov < rcsAdaptiveLimit) 
+			if (shotsFired > 0)
 			{
-				Settings::Aimbot::AutoAim::fov = adaptiveFov;
-				bestFov = adaptiveFov;
-			} 
-			else 
-			{
+				adaptiveFov += shotsFired * rcsAdaptiveSpeed;
 
 				if (adaptiveFov < rcsAdaptiveLimit)
 				{
@@ -220,19 +241,18 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		Bone targetBone = Settings::Aimbot::bone;
 		C_BasePlayer* temp = savedTarget;
 
-		if (Settings::Aimbot::StickyAim::enabled 
-			&& temp
-			&& !temp->GetDormant()
-			&& !temp->GetImmune()
-			&& temp->GetAlive()
-			&& Entity::IsVisible(temp, targetBone))
-				player = temp;
+		if (Settings::Aimbot::TargetLock::enabled)
+		{
+			if (PlayerCheck(temp, localplayer, true) && Entity::IsVisible(temp, targetBone))
+					player = temp;
+			else
+			{
+				if (PlayerCheck(player, localplayer, false))
+					continue;
+			}
+		}
 		else
-		if (!player
-			|| player == localplayer
-			|| player->GetDormant()
-			|| !player->GetAlive()
-			|| player->GetImmune())
+		if (PlayerCheck(player, localplayer, false))
 			continue;
 
 
@@ -242,7 +262,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		IEngineClient::player_info_t entityInformation;
 		engine->GetPlayerInfo(i, &entityInformation);
 
-		if (Settings::Aimbot::StickyAim::KillTimeout::enabled && player != temp)
+		if (Settings::Aimbot::TargetLock::KillTimeout::enabled && player != temp)
 		{
 			killTime = globalVars->curtime;
 			killTime += killTimeout; 
@@ -341,7 +361,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 
 	savedTarget = closestEntity;
 
-	if (killTime > globalVars->curtime && Settings::Aimbot::StickyAim::KillTimeout::enabled && Settings::Aimbot::StickyAim::enabled)
+	if (killTime > globalVars->curtime && Settings::Aimbot::TargetLock::KillTimeout::enabled && Settings::Aimbot::TargetLock::enabled)
 		return NULL;
 
 	return closestEntity;
@@ -811,9 +831,9 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::AutoSlow::minDamage = currentWeaponSetting.autoSlowMinDamage;
 	Settings::Aimbot::SpreadLimit::enabled = currentWeaponSetting.spreadLimitEnabled;
 	Settings::Aimbot::SpreadLimit::value = currentWeaponSetting.spreadLimitValue;
-	Settings::Aimbot::StickyAim::enabled = currentWeaponSetting.stickyAimEnabled;
-	Settings::Aimbot::StickyAim::KillTimeout::enabled = currentWeaponSetting.killTimeoutEnabled;
-	Settings::Aimbot::StickyAim::KillTimeout::value = currentWeaponSetting.killTimeoutValue;
+	Settings::Aimbot::TargetLock::enabled = currentWeaponSetting.targetLockEnabled;
+	Settings::Aimbot::TargetLock::KillTimeout::enabled = currentWeaponSetting.killTimeoutEnabled;
+	Settings::Aimbot::TargetLock::KillTimeout::value = currentWeaponSetting.killTimeoutValue;
 
 	for (int i = (int) Hitbox::HITBOX_HEAD; i <= (int) Hitbox::HITBOX_ARMS; i++)
 		Settings::Aimbot::AutoWall::bones[i] = currentWeaponSetting.autoWallBones[i];
