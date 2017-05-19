@@ -446,6 +446,9 @@ void Aimbot::AutoCockRevolver(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* lo
 	if (!Settings::Aimbot::AutoCockRevolver::enabled)
 		return;
 
+	if (cmd->buttons & IN_RELOAD)
+		return;
+
 	if (*activeWeapon->GetItemDefinitionIndex() != ItemDefinitionIndex::WEAPON_REVOLVER)
 		return;
 
@@ -564,7 +567,7 @@ void Aimbot::AutoPistol(C_BaseCombatWeapon* activeWeapon, CUserCmd* cmd)
 	if (activeWeapon->GetNextPrimaryAttack() < globalVars->curtime)
 		return;
 
-	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 		cmd->buttons &= ~IN_ATTACK2;
 	else
 		cmd->buttons &= ~IN_ATTACK;
@@ -601,7 +604,7 @@ void Aimbot::AutoShoot(C_BasePlayer* player, C_BaseCombatWeapon* activeWeapon, C
 
 	if (nextPrimaryAttack > globalVars->curtime)
 	{
-		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 			cmd->buttons &= ~IN_ATTACK2;
 		else
 			cmd->buttons &= ~IN_ATTACK;
@@ -610,7 +613,7 @@ void Aimbot::AutoShoot(C_BasePlayer* player, C_BaseCombatWeapon* activeWeapon, C
 	{
 		if (Settings::Aimbot::AutoShoot::autoscope && activeWeapon->GetCSWpnData()->GetZoomLevels() > 0 && !localplayer->IsScoped())
 			cmd->buttons |= IN_ATTACK2;
-		else if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+		else if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 			cmd->buttons |= IN_ATTACK2;
 		else
 			cmd->buttons |= IN_ATTACK;
@@ -634,7 +637,7 @@ void Aimbot::ShootCheck(C_BaseCombatWeapon* activeWeapon, CUserCmd* cmd)
 	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_C4)
 		return;
 
-	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+	if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 		cmd->buttons &= ~IN_ATTACK2;
 	else
 		cmd->buttons &= ~IN_ATTACK;
@@ -647,7 +650,7 @@ void Aimbot::NoShoot(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* player, CUs
 		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_C4)
 			return;
 
-		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 			cmd->buttons &= ~IN_ATTACK2;
 		else
 			cmd->buttons &= ~IN_ATTACK;
