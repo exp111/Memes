@@ -90,6 +90,12 @@ void GetBestBone(C_BasePlayer* player, float& bestDamage, Bone& bestBone)
 {
 	bestBone = Bone::BONE_HEAD;
 
+	if (Entity::IsVisible(player, bestBone))
+	{
+		bestDamage = 100;
+		return;
+	}
+
 	for (std::unordered_map<Hitbox, std::vector<const char*>, Util::IntHash<Hitbox>>::iterator it = hitboxes.begin(); it != hitboxes.end(); it++)
 	{
 		if (!Settings::Aimbot::AutoWall::bones[(int) it->first])
@@ -320,7 +326,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		if (aimTargetType == AimTargetType::HP && hp > bestHp)
 			continue;
 
-		if (visible && !Settings::Aimbot::AutoWall::enabled && !Entity::IsVisible(player, targetBone))
+		if (visible && !Settings::Aimbot::AutoWall::enabled && !Entity::IsVisible(player, targetBone) && !Settings::Aimbot::HitScan::enabled)
 			continue;
 
 		bestBone = static_cast<Bone>(Entity::GetBoneByName(player, targets[(int) targetBone]));
@@ -613,7 +619,8 @@ void Aimbot::AutoShoot(C_BasePlayer* player, C_BaseCombatWeapon* activeWeapon, C
 	{
 		if (Settings::Aimbot::AutoShoot::autoscope && activeWeapon->GetCSWpnData()->GetZoomLevels() > 0 && !localplayer->IsScoped())
 			cmd->buttons |= IN_ATTACK2;
-		else if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
+		else 
+		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER && !Settings::Aimbot::AutoCockRevolver::enabled)
 			cmd->buttons |= IN_ATTACK2;
 		else
 			cmd->buttons |= IN_ATTACK;
