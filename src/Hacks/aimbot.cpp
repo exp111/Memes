@@ -59,7 +59,6 @@ std::vector<int64_t> Aimbot::friends = { };
 
 bool shouldAim;
 float killTime = 0.0f;
-float autoCockDifference = 0.0f;
 QAngle AimStepLastAngle;
 QAngle RCSLastPunch;
 C_BasePlayer* savedTarget = NULL;
@@ -449,17 +448,13 @@ void Aimbot::AutoCockRevolver(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* lo
 
 	if (*activeWeapon->GetItemDefinitionIndex() != ItemDefinitionIndex::WEAPON_REVOLVER)
 		return;
-	
-	if (autoCockDifference == 0.0f)
-		autoCockDifference = globalVars->curtime;
 
-	if (autoCockDifference >= globalVars->curtime)
+	cmd->buttons |= IN_ATTACK;
+	float postponeFireReady = activeWeapon->GetPostponeFireReadyTime();
+
+	if (postponeFireReady > 0 && postponeFireReady - 1.f < globalVars->curtime)
 	{
-		cmd->buttons |= IN_ATTACK;
-	}
-	else 
-	{
-		autoCockDifference = globalVars->curtime + 0.2421f;
+		cmd->buttons &= ~IN_ATTACK;
 	}
 }
 
@@ -737,12 +732,12 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 	Aimbot::AutoCrouch(player, cmd);
 	Aimbot::AutoSlow(player, oldForward, oldSideMove, bestDamage, activeWeapon, cmd);
 	Aimbot::AutoPistol(activeWeapon, cmd);
+	Aimbot::AutoCockRevolver(activeWeapon, player, cmd);
 	Aimbot::AutoShoot(player, activeWeapon, cmd);
 	Aimbot::RCS(angle, player, cmd);
 	Aimbot::Smooth(player, angle, cmd);
 	Aimbot::ShootCheck(activeWeapon, cmd);
 	Aimbot::NoShoot(activeWeapon, player, cmd);
-	Aimbot::AutoCockRevolver(activeWeapon, player, cmd);
 
 	Math::NormalizeAngles(angle);
 	Math::ClampAngles(angle);
