@@ -198,9 +198,9 @@ void Aimbot::RenderTab()
 				SetTooltip("Whether to target friendlies");	
 				ImGui::PushItemWidth(-1);
 
-				if (ImGui::Checkbox("Sticky Aimbot", &targetLockEnabled))
+				if (ImGui::Checkbox("Target Lock", &targetLockEnabled))
 					UI::UpdateWeaponSettings();
-				SetTooltip("Sticks to the target, doesnt snap to the other");
+				SetTooltip("Locks to the target, doesnt snap to the other until the first is accessible");
 
 				if (ImGui::Checkbox("Kill Timeout", &killTimeoutEnabled))
 					UI::UpdateWeaponSettings();
