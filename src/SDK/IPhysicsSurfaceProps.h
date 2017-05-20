@@ -21,10 +21,8 @@ struct surfaceaudioparams_t
 
 struct surfacesoundnames_t
 {
-	unsigned short walkStepLeft;
-	unsigned short walkStepRight;
-	unsigned short runStepLeft;
-	unsigned short runStepRight;
+	unsigned short stepLeft;
+	unsigned short stepRight;
 	unsigned short impactSoft;
 	unsigned short impactHard;
 	unsigned short scrapeSmooth;
@@ -37,10 +35,8 @@ struct surfacesoundnames_t
 
 struct surfacesoundhandles_t
 {
-	short walkStepLeft;
-	short walkStepRight;
-	short runStepLeft;
-	short runStepRight;
+	short stepLeft;
+	short stepRight;
 	short impactSoft;
 	short impactHard;
 	short scrapeSmooth;

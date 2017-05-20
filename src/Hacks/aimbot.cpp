@@ -56,6 +56,7 @@ bool Settings::Aimbot::AutoCockRevolver::enabled = false;
 
 bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
+int Aimbot::bestTarget = -1;
 
 bool shouldAim;
 float killTime = 0.0f;
@@ -245,6 +246,7 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		C_BasePlayer* player = (C_BasePlayer*) entityList->GetClientEntity(i);
 		Bone targetBone = Settings::Aimbot::bone;
 		C_BasePlayer* temp = savedTarget;
+		Aimbot::bestTarget = i;
 
 		if (Settings::Aimbot::TargetLock::enabled)
 		{
