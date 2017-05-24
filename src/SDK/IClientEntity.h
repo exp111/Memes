@@ -640,13 +640,13 @@ public:
 	float GetSpread()
 	{
 		typedef float (* oGetSpread)(void*);
-		return getvfunc<oGetSpread>(this, 553)(this);
+		return getvfunc<oGetSpread>(this, 484)(this);
 	}
 
 	void UpdateAccuracyPenalty()
 	{
 		typedef void (* oUpdateAccuracyPenalty)(void*);
-		return getvfunc<oUpdateAccuracyPenalty>(this, 554)(this);
+		return getvfunc<oUpdateAccuracyPenalty>(this, 485)(this);
 	}
 };
 
