@@ -774,7 +774,7 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 	if (Settings::Aimbot::pSilent && (cmd->buttons & IN_ATTACK) && bulletTime)
 		CreateMove::sendPacket = false;
 
-	if (!Settings::Aimbot::silent || !Settings::Aimbot::pSilent)
+	if (!Settings::Aimbot::silent)
 		engine->SetViewAngles(cmd->viewangles);
 }
 
