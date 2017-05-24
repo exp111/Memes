@@ -46,6 +46,7 @@ void AutoDefuse::CreateMove(CUserCmd *cmd)
      		Vector pVecTarget = localplayer->GetEyePosition();
      		Vector pTargetBomb = bomb->GetVecOrigin();
      		QAngle angle = Math::CalcAngle(pVecTarget, pTargetBomb);
+		Math::NormalizeAngles(angle);
      		Math::ClampAngles(angle);
      		cmd->viewangles = angle;
      	}
