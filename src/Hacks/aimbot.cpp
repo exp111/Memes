@@ -767,11 +767,14 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 	Math::CorrectMovement(oldAngle, cmd, oldForward, oldSideMove);
 
 	bool bulletTime = true;									//Thanks to @kast1450
+
 	if (activeWeapon->GetNextPrimaryAttack() > globalVars->curtime)
 		bulletTime = false;
+
 	if (Settings::Aimbot::pSilent && (cmd->buttons & IN_ATTACK) && bulletTime)
 		CreateMove::sendPacket = false;
-	if (!Settings::Aimbot::silent)
+
+	if (!Settings::Aimbot::silent || !Settings::Aimbot::pSilent)
 		engine->SetViewAngles(cmd->viewangles);
 }
 
