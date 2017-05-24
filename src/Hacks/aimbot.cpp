@@ -266,17 +266,21 @@ C_BasePlayer* GetClosestPlayer(CUserCmd* cmd, bool visible, Bone& bestBone, floa
 		if (!Settings::Aimbot::friendly && player->GetTeam() == localplayer->GetTeam())
 			continue;
 
-		IEngineClient::player_info_t entityInformation;
-		engine->GetPlayerInfo(i, &entityInformation);
+		if (!Aimbot::friends.empty())
+		{
+			IEngineClient::player_info_t entityInformation;
+			engine->GetPlayerInfo(i, &entityInformation);
+
+			if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
+				continue;
+		}
+
 
 		if (Settings::Aimbot::TargetLock::KillTimeout::enabled && player != temp)
 		{
 			killTime = globalVars->curtime;
 			killTime += killTimeout; 
 		}
-
-		if (std::find(Aimbot::friends.begin(), Aimbot::friends.end(), entityInformation.xuid) != Aimbot::friends.end())
-			continue;
 		
 		//if (Settings::Aimbot::HitScan::enabled)
 		//	HitScan(player, targetBone);
@@ -383,14 +387,14 @@ void Aimbot::RCS(QAngle& angle, C_BasePlayer* player, CUserCmd* cmd)
 	if (!(cmd->buttons & IN_ATTACK))
 		return;
 
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
-	bool isSilent = Settings::Aimbot::silent;
 	bool hasTarget = Settings::Aimbot::AutoAim::enabled && player && shouldAim;
 
 	if (!Settings::Aimbot::RCS::always_on && !hasTarget)
 		return;
 
+	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
+	static bool isSilent = Settings::Aimbot::silent;
 	
 	if (isSilent || hasTarget)
 	{
@@ -670,6 +674,11 @@ void Aimbot::NoShoot(C_BaseCombatWeapon* activeWeapon, C_BasePlayer* player, CUs
 
 void Aimbot::CreateMove(CUserCmd* cmd)
 {
+	C_BasePlayer* localplayer = (C_BasePlayer*)entityList->GetClientEntity(engine->GetLocalPlayer());
+
+	if (!localplayer || !localplayer->GetAlive())
+		return;
+
 	Aimbot::UpdateValues();
 
 	if (!Settings::Aimbot::enabled)
@@ -683,10 +692,6 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 	QAngle angle = cmd->viewangles;
 
 	shouldAim = Settings::Aimbot::AutoShoot::enabled;
-
-	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-	if (!localplayer || !localplayer->GetAlive())
-		return;
 
 	if (Settings::Aimbot::IgnoreJump::enabled && !(localplayer->GetFlags() & FL_ONGROUND))
 		return;
