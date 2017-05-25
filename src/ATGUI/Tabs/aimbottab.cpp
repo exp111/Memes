@@ -225,7 +225,7 @@ void Aimbot::RenderTab()
 
 					ImGui::EndPopup();
 				}
-				ImGui::PopStyleVar;
+				ImGui::PopStyleVar();
 
 			}
 			ImGui::NextColumn();
