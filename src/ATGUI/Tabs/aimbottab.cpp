@@ -216,6 +216,7 @@ void Aimbot::RenderTab()
 					ImGui::OpenPopup("#ERROR###HITSCAN_NOT_WORKING_WITH_AWALL");
 				}
 
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(210, 85));
 				if (ImGui::BeginPopupModal("#ERROR###HITSCAN_NOT_WORKING_WITH_AWALL", NULL, ImGuiWindowFlags_NoResize))
 				{
 					ImGui::Text("Autowall automatically disables Hitscan. \n Please make sure AutoWall is disabled before enabling HitScan.");
@@ -224,6 +225,7 @@ void Aimbot::RenderTab()
 
 					ImGui::EndPopup();
 				}
+				ImGui::PopStyleVar;
 
 			}
 			ImGui::NextColumn();
