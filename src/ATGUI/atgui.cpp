@@ -1,9 +1,12 @@
 #include "atgui.h"
 
 bool UI::isVisible = false;
+bool Settings::Watermark::enabled = true;
+char* Settings::Watermark::text = strdup("Antario");
+ColorVar Settings::Watermark::color = ImColor(255, 255, 255, 255);
+bool Settings::BombTimer::enabled = true;
 
 bool Settings::ScreenshotCleaner::enabled = false;
-bool Settings::Watermark::enabled = true;
 
 ColorVar Settings::UI::mainColor = ImColor(40, 40, 40, 180);
 ColorVar Settings::UI::bodyColor = ImColor(0, 0, 2, 220);
@@ -50,12 +53,24 @@ void UI::SwapWindow()
 	if (UI::isVisible)
 		return;
 
+	if (Settings::Watermark::enabled)
+		Draw::ImDrawText(ImVec2(4.f, 4.f), Settings::Watermark::color.Color(), Settings::Watermark::text, NULL, 0.0f, NULL, ImFontFlags_Outline);
+
+	if (Settings::BombTimer::enabled) {
+		if (Settings::Watermark::enabled)
+		{
+			ESP::DisplayBombInfo(2);
+		} 
+		else 
+		{
+			ESP::DisplayBombInfo(1);
+		}
+	}
+
 	if (engine->IsInGame())
 		return;
-
-	if (Settings::Watermark::enabled)	
-		Draw::ImDrawText(ImVec2(4.f, 4.f), ImColor(0, 200, 255, 255), "Antario", NULL, 0.0f, NULL, ImFontFlags_Shadow);
 }
+
 
 void UI::SetVisible(bool visible)
 {

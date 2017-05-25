@@ -40,6 +40,7 @@ void Colors::RenderWindow()
 			{ "UI Main", &Settings::UI::mainColor },
 			{ "UI Body", &Settings::UI::bodyColor },
 			{ "UI Font", &Settings::UI::fontColor },
+			{ "Watermark", &Settings::Watermark::color },
 			{ "FOV Circle", &Settings::ESP::FOVCrosshair::color },
 			{ "Hitmarker", &Settings::ESP::Hitmarker::color },
 			{ "ESP - Enemy", &Settings::ESP::enemyColor },

@@ -1,11 +1,20 @@
 #include "visualstab.h"
+
 bool Visuals::LegitModeToggleVisible() {
- 	if (!Settings::ESP::Filters::legitModeToggle && Settings::ESP::Filters::legit)
- 			return false;
- 		else if (!inputSystem->IsButtonDown(Settings::ESP::Filters::legitModeToggleKey))
- 			return false;
- 		return true;
+	if (Settings::ESP::Filters::legit)
+	{
+		if (!Settings::ESP::Filters::legitModeToggle)
+			return false;
+		else if (!inputSystem->IsButtonDown(Settings::ESP::Filters::legitModeToggleKey))
+			return false;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
+
 void Visuals::RenderTab()
 {
 	const char* BoxTypes[] = { "Flat 2D", "Frame 2D", "Box 3D" };
@@ -222,8 +231,6 @@ void Visuals::RenderTab()
 				SetTooltip("Makes wall textures transparent");
 				ImGui::Checkbox("No Scope Border", &Settings::NoScopeBorder::enabled);
 				SetTooltip("Disables black scope silhouette");
-				ImGui::Checkbox("Menu Watermark", &Settings::Watermark::enabled);
-				SetTooltip("Enable/Disable main menu watermark");
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();

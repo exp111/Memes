@@ -198,7 +198,7 @@ void Radar::RenderWindow()
 					continue;
 
 				bool bIsVisible = player->GetTeam() == localplayer->GetTeam() || (Settings::Radar::visibilityCheck && (*player->GetSpotted() || std::find(visible_players.begin(), visible_players.end(), i) != visible_players.end()));
-				if (!bIsVisible && Settings::Radar::legit)
+				if (!bIsVisible && Settings::Radar::legit && !Visuals::LegitModeToggleVisible())
 					continue;
 
 				C_BasePlayer* observer_target = (C_BasePlayer*) entityList->GetClientEntityFromHandle(localplayer->GetObserverTarget());

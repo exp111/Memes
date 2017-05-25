@@ -701,7 +701,7 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 		return;
 
 	CSWeaponType weaponType = activeWeapon->GetCSWpnData()->GetWeaponType();
-	if (weaponType == CSWeaponType::WEAPONTYPE_C4 || weaponType == CSWeaponType::WEAPONTYPE_GRENADE || weaponType == CSWeaponType::WEAPONTYPE_KNIFE)
+	if (weaponType == CSWeaponType::WEAPONTYPE_C4 || weaponType == CSWeaponType::WEAPONTYPE_GRENADE)
 		return;
 
 	Bone aw_bone;

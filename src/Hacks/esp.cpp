@@ -690,6 +690,40 @@ void ESP::DrawPlantedBomb(C_PlantedC4* bomb)
 	DrawEntity(bomb, displayText.str().c_str(), Color::FromImColor(color));
 }
 
+void ESP::DisplayBombInfo(int Row)
+{
+	if (!(*csGameRules) || !(*csGameRules)->IsBombPlanted())
+			return;
+	for (int i = 1; i < entityList->GetHighestEntityIndex(); i++)
+	{
+		C_BaseEntity* entity = entityList->GetClientEntity(i);
+		if (!entity)
+			continue;
+		ClientClass* client = entity->GetClientClass();
+		if (client->m_ClassID == EClassIds::CPlantedC4)
+		{
+			C_PlantedC4* bomb = (C_PlantedC4*) entity;
+			float bombTimer = bomb->GetBombTime() - globalVars->curtime;
+
+			//damage
+			C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+			Vector vecOrigin = bomb->GetVecOrigin();
+			float flDistance = localplayer->GetEyePosition().DistTo(vecOrigin);
+			float a = 450.7f;
+			float b = 75.68f;
+			float c = 789.2f;
+			float d = ((flDistance - b) / c);
+			float flDamage = a*expf(-d * d);
+			float damage = std::max((int)ceilf(GetArmourHealth(flDamage, localplayer->GetArmor())), 0);
+
+			std::stringstream displayText;
+			displayText << "Bomb: " << std::fixed << std::showpoint << std::setprecision(1) << bombTimer << ", Damage: " << (int) damage;
+			float ycord = Row * 12.f;
+			Draw::ImDrawText(ImVec2(4.f, ycord), Settings::Watermark::color.Color(), displayText.str().c_str(), NULL, 0.0f, NULL, ImFontFlags_Outline);
+		}
+	}
+}
+
 void ESP::DrawDefuseKit(C_BaseEntity* defuser)
 {
 	DrawEntity(defuser, "Defuser", Color::FromImColor(Settings::ESP::defuserColor.Color()));

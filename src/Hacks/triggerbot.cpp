@@ -131,7 +131,7 @@ void Triggerbot::CreateMove(CUserCmd *cmd)
 		return;
 
 	ItemDefinitionIndex itemDefinitionIndex = *activeWeapon->GetItemDefinitionIndex();
-	if (itemDefinitionIndex == ItemDefinitionIndex::WEAPON_KNIFE || itemDefinitionIndex >= ItemDefinitionIndex::WEAPON_KNIFE_BAYONET)
+	if (itemDefinitionIndex == ItemDefinitionIndex::WEAPON_KNIFE || itemDefinitionIndex >= ItemDefinitionIndex::WEAPON_KNIFE_BAYONET || itemDefinitionIndex == ItemDefinitionIndex::WEAPON_TASER)
 		return;
 
 	CSWeaponType weaponType = activeWeapon->GetCSWpnData()->GetWeaponType();
