@@ -473,6 +473,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
 
 	settings["AutoDefuse"]["enabled"] = Settings::AutoDefuse::enabled;
 	settings["AutoDefuse"]["silent"] = Settings::AutoDefuse::silent;
+	settings["AutoDefuse"]["time"] = Settings::AutoDefuse::time;
 
 	settings["NoSmoke"]["enabled"] = Settings::NoSmoke::enabled;
 
@@ -936,6 +937,7 @@ void Settings::LoadConfig(std::string path)
 
 	GetVal(settings["AutoDefuse"]["enabled"], &Settings::AutoDefuse::enabled);
 	GetVal(settings["AutoDefuse"]["silent"], &Settings::AutoDefuse::silent);
+	GetVal(settings["AutoDefuse"]["time"], &Settings::AutoDefuse::time);
 
 	GetVal(settings["NoSmoke"]["enabled"], &Settings::NoSmoke::enabled);
 

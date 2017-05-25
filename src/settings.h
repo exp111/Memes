@@ -945,6 +945,7 @@ namespace Settings
 	{
 		extern bool enabled;
 		extern bool silent;
+		extern float time;
 	}
 
 	namespace NoSmoke
