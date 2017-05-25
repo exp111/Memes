@@ -210,6 +210,21 @@ void Aimbot::RenderTab()
 				 	UI::UpdateWeaponSettings();
 				SetTooltip("Scans for visible bones to shoot. May lower your FPS.");
 				
+				if (&hitScan && &autoWallEnabled)
+				{
+					hitScan = false;
+					ImGui::OpenPopup("#ERROR###HITSCAN_NOT_WORKING_WITH_AWALL");
+				}
+
+				if (ImGui::BeginPopupModal("#ERROR###HITSCAN_NOT_WORKING_WITH_AWALL", NULL, ImGuiWindowFlags_NoResize))
+				{
+					ImGui::Text("Autowall automatically disables Hitscan. \n Please make sure AutoWall is disabled before enabling HitScan.");
+					if (ImGui::Button("OK"))
+						ImGui::CloseCurrentPopup();
+
+					ImGui::EndPopup();
+				}
+
 			}
 			ImGui::NextColumn();
 			{

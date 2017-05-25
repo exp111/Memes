@@ -93,7 +93,7 @@ void GetBestBone(C_BasePlayer* player, float& bestDamage, Bone& bestBone)
 
 	if (Entity::IsVisible(player, bestBone))
 	{
-		bestDamage = 100;
+		bestDamage = 999;
 		return;
 	}
 
@@ -103,15 +103,15 @@ void GetBestBone(C_BasePlayer* player, float& bestDamage, Bone& bestBone)
 			continue;
 
 		std::vector<const char*> hitboxList = hitboxes[it->first];
+
 		for (std::vector<const char*>::iterator it2 = hitboxList.begin(); it2 != hitboxList.end(); it2++)
 		{
 			Bone bone = Entity::GetBoneByName(player, *it2);
-			Vector vecBone = player->GetBonePosition((int) bone);
 
 			if (Settings::Aimbot::HitScan::enabled && !Entity::IsVisible(player, bone))
-				return;
+				continue;
 
-
+			Vector vecBone = player->GetBonePosition((int)bone);
 			Autowall::FireBulletData data;
 			float damage = Autowall::GetDamage(vecBone, !Settings::Aimbot::friendly, data);
 
