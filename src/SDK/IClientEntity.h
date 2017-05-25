@@ -634,19 +634,19 @@ public:
 	float GetInaccuracy()
 	{
 		typedef float (* oGetInaccuracy)(void*);
-		return getvfunc<oGetInaccuracy>(this, 552)(this);
+		return getvfunc<oGetInaccuracy>(this, 551)(this);
 	}
 
 	float GetSpread()
 	{
 		typedef float (* oGetSpread)(void*);
-		return getvfunc<oGetSpread>(this, 484)(this);
+		return getvfunc<oGetSpread>(this, 552)(this);
 	}
 
 	void UpdateAccuracyPenalty()
 	{
 		typedef void (* oUpdateAccuracyPenalty)(void*);
-		return getvfunc<oUpdateAccuracyPenalty>(this, 485)(this);
+		return getvfunc<oUpdateAccuracyPenalty>(this, 553)(this);
 	}
 };
 
